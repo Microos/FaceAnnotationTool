@@ -28,6 +28,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.ActionEvent;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -123,14 +124,20 @@ public class MainFrame extends JFrame {
 				if(e.getButton() == MouseEvent.BUTTON1){
 					cm.leftClick(e.getX(), e.getY());
 				}
+				if(e.getButton() == MouseEvent.BUTTON3){
+					cm.rightClick(e.getX(), e.getY());
+				}
 			}
 		});
 		cm = new ClickManager(imagePanel);
 		imagePanel.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				cm.mouseAt(e.getX(), e.getY());
-
+				int x = e.getX(); int y = e.getY();
+				cm.mouseAt(x,y);
+				if (e.isShiftDown()){
+					cm.mouseShiftMoveAt(x, y);
+				}
 			}
 		});
 		imagePanel.setForeground(Color.WHITE);
@@ -153,33 +160,8 @@ public class MainFrame extends JFrame {
 		imagePanel.setPreferredSize(d);
 		// imagePanel.setMaximumSize(d);
 		// imagePanel.setMinimumSize(d);
-
 	}
 
-	// void autoAdjustScrollPanelSize(int imw, int imh) {
-	// int toolw = toolPanel.getWidth();
-	// int toolh = toolPanel.getHeight();
-	// int scrw = scrollPanel.getWidth();
-	// int scrh = scrollPanel.getHeight();
-	//
-	// // deal with H
-	// System.out.println("defaultH " + defaultScrollH);
-	// if (imh <= defaultScrollH) {
-	// setAllSize(scrollPanel, scrw, imh);
-	// this.setSize(new Dimension(this.getWidth(), imh+toolh+50));
-	// System.out.println("scrollPanel: " + scrw + " " + imh);
-	// System.out.println("windowSize :" + this.getWidth() + " " +
-	// this.getHeight());
-	// }
-	// if (imh > defaultScrollH){
-	// setAllSize(scrollPanel, scrw, defaultScrollH);
-	// this.setSize(new Dimension(this.getWidth(), defaultScrollH+toolh+50));
-	// System.out.println("scrollPanel: " + scrw + " " + defaultScrollH);
-	// System.out.println("windowSize :" + this.getWidth() + " " +
-	// this.getHeight());
-	// }
-	//
-	// }
 
 	void testSetBackgroundImage() {
 		if (defaultScrollW == -1)

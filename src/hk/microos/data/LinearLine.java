@@ -22,8 +22,6 @@ public class LinearLine {
 	}
 
 	public LinearLine(Point_ a, Point_ b) {
-		System.out.println("diffY: "+Math.abs(a.y-b.y));
-		System.out.println("diffX: "+Math.abs(a.x-b.x));
 		if (Math.abs(a.y-b.y) < 0.0000001) {
 			horizontal = true;
 		}
@@ -51,13 +49,13 @@ public class LinearLine {
 		
 		Point_[] ends = new Point_[2];
 		if(this.horizontal){
-			ends[0] = new Point_(x0, halfLong);
-			ends[1] = new Point_(x0, -halfLong);
+			ends[0] = new Point_(x0, y0+halfLong);
+			ends[1] = new Point_(x0, y0-halfLong);
 			return ends;
 		}
 		if(this.vertical){
-			ends[0] = new Point_(-halfLong, y0);
-			ends[1] = new Point_(halfLong, y0);
+			ends[0] = new Point_(x0-halfLong, y0);
+			ends[1] = new Point_(x0+halfLong, y0);
 			return ends;
 		}
 		LinearLine pll = this.getPependicularLinearLineAt(x0, y0);

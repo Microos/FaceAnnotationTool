@@ -11,7 +11,13 @@ public class ClickManager {
 	public ClickManager(MyImagePanel panel) {
 		this.panel = panel;
 	}
-
+	public void rightClick(int globalX, int globalY){
+		if (!panel.isInited())
+			return;
+		if (!UniverseTool.inBound(panel.minX, panel.minY, panel.maxX, panel.maxY, globalX, globalY))
+			return;
+		panel.removeActived();
+	}
 	public void leftClick(int globalX, int globalY) {
 		if (!panel.isInited())
 			return;
@@ -19,7 +25,6 @@ public class ClickManager {
 			return;
 		Point_ p = new Point_(globalX, globalY);
 		panel.addUnfinishedPoint(p);
-		panel.repaint();
 	}
 
 	public void mouseAt(int globalX, int globalY) {
@@ -28,11 +33,16 @@ public class ClickManager {
 		if (!UniverseTool.inBound(panel.minX, panel.minY, panel.maxX, panel.maxY, globalX, globalY))
 			return;
 		if (panel.waitLastPoint) {
-			panel.liveX = globalX;
-			panel.liveY = globalY;
+			panel.setLiveXY(globalX, globalY);
 			panel.repaint();
-
 		}
-
+	}
+	public void mouseShiftMoveAt(int globalX, int globalY){
+		if (!panel.isInited())
+			return;
+		if (!UniverseTool.inBound(panel.minX, panel.minY, panel.maxX, panel.maxY, globalX, globalY))
+			return;
+		panel.activateClosest(globalX, globalY);
+		
 	}
 }

@@ -44,6 +44,9 @@ public class Ellipse {
 	public ArrayList<Point_> getKeyPoints(){
 		return keyPts;
 	}
+	public Point_ getCenter(){
+		return new Point_(this.x, this.y);
+	}
 	public Ellipse2D.Double getErectedEllipse2D() {
 		return new Ellipse2D.Double(x - major, y - minor, major * 2, minor * 2);
 	}
