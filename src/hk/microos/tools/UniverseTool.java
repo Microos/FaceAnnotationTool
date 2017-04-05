@@ -3,6 +3,8 @@ package hk.microos.tools;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
+import javax.naming.NoInitialContextException;
+
 import hk.microos.data.Ellipse;
 import hk.microos.data.Point_;
 
@@ -49,5 +51,24 @@ public class UniverseTool {
 		double A2 = (a.x - b.x)*(a.x - b.x);
 		double B2 = (a.y - b.y)*(a.y - b.y);
 		return Math.sqrt(A2+B2);
+	}
+	public static boolean inBound(Point_ p, int minX, int minY, int maxX, int maxY){
+		double x = p.x;
+		double y = p.y;
+		if( (x>=minX && x<=maxX) && (y>=minY && y<maxY)){
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
+	public static Point_ getInboundPoint(Point_ p, int minX, int minY, int maxX, int maxY){
+		double px = p.x;
+		double py = p.y;
+		px = px>maxX? maxX:px;
+		px = px<minX? minX:px;
+		py = py>maxY? maxY:py;
+		py = py<minY? minY:py;
+		return new Point_(px,py);
 	}
 }

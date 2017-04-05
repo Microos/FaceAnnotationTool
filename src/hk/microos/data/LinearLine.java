@@ -24,8 +24,7 @@ public class LinearLine {
 	public LinearLine(Point_ a, Point_ b) {
 		if (Math.abs(a.y-b.y) < 0.0000001) {
 			horizontal = true;
-		}
-		if (Math.abs(a.x-b.x) < 0.0000001) {
+		}else if (Math.abs(a.x-b.x) < 0.0000001) {
 			vertical = true;
 		} else {
 			this.k = (a.y - b.y) / (a.x - b.x);
@@ -33,11 +32,20 @@ public class LinearLine {
 		}
 	}
 	public double calY(double X){
-		
 		return this.k*X+b;
 	}
-	public Point_ projectOnLine(double x0, double y0){
-		return new Point_(x0, this.calY(x0));
+	public double calX(double Y){
+		return (Y-this.b)/this.k;
+	}
+	public Point_ projectOnLine(double x0, double y0, int minX, int minY, int maxX, int maxY){
+		Point_ p = Math.abs(this.k) < 1?new Point_(x0, this.calY(x0)): new Point_(this.calX(y0),y0);
+		if(UniverseTool.inBound(p, minX, minY, maxX, maxY)){
+			return p;
+		}else{
+			
+		}
+
+		
 	}
 	public Point_[] getLineEndPoints(double x0, double y0, double halfLong) {
 		

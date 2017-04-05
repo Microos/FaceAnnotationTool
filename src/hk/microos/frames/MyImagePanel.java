@@ -99,8 +99,7 @@ public class MyImagePanel extends JPanel {
 		// Project on the perpendicular line
 		LinearLine pll = ll.getPependicularLinearLineAt(midPoint.x, midPoint.y);
 		this.projPoint = pll.projectOnLine(perpendicularConstrainX, perpendicularConstrainY);
-		if (!UniverseTool.inBound(minX, minY, maxX, maxY, (int)projPoint.x, (int)projPoint.y))
-			return;
+		this.projPoint = UniverseTool.getInboundPoint(this.projPoint, minX, minY, maxX, maxY);
 		g2d.setColor(Color.YELLOW);
 		g2d.draw(UniverseTool.getPointOval(projPoint, 5));
 
@@ -162,9 +161,6 @@ public class MyImagePanel extends JPanel {
 
 		}
 		if (unfinished.size() == 3) {
-			if (!UniverseTool.inBound(minX, minY, maxX, maxY, (int)projPoint.x, (int)projPoint.y)){
-				return;
-			}
 				
 			mImg.addElps(new Ellipse(unfinished.get(0), unfinished.get(1), this.projPoint));
 			unfinished = new ArrayList<>();
