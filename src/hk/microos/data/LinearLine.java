@@ -2,7 +2,7 @@ package hk.microos.data;
 
 import java.util.ArrayList;
 
-import hk.microos.tools.UniverseTool;
+import hk.microos.tools.UniversalTool;
 
 public class LinearLine {
 	private boolean vertical = false;
@@ -38,23 +38,35 @@ public class LinearLine {
 		return (Y-this.b)/this.k;
 	}
 	public Point_ projectOnLine(double x0, double y0, int minX, int minY, int maxX, int maxY){
+		if(this.vertical){
+			return new Point_(this.b, y0);
+		}
+		if(this.horizontal){
+			return new Point_(x0, this.b);
+		}
 		Point_ p = Math.abs(this.k) < 1?new Point_(x0, this.calY(x0)): new Point_(this.calX(y0),y0);
-		if(UniverseTool.inBound(p, minX, minY, maxX, maxY)){
+		if(UniversalTool.inBound(p, minX, minY, maxX, maxY)){
 			return p;
 		}else{
-			
+			double imgTan = (maxY-minY)/(maxX-minX);
+			Point_ intersect1, intersect2;
+			if(Math.abs(this.k) >= imgTan){
+				intersect1 = new Point_(this.calX(minY),minY);
+				intersect2 = new Point_(this.calX(maxY),maxY);
+			}else{
+				intersect1 = new Point_(minX, calY(minX));
+				intersect2 = new Point_(maxX, calY(maxX));
+			}
+			return (UniversalTool.distance(p,intersect1) < UniversalTool.distance(p,intersect2))?intersect1:intersect2;
 		}
 
 		
 	}
-	public Point_[] getLineEndPoints(double x0, double y0, double halfLong) {
-		
+	public Point_[] getPerpendicularLineEndPoints(double x0, double y0, double halfLong) {
 		if(halfLong < 0.5) {
 			System.out.println("HL "+halfLong);
 			halfLong = 5;
 		}
-			
-		
 		Point_[] ends = new Point_[2];
 		if(this.horizontal){
 			ends[0] = new Point_(x0, y0+halfLong);
@@ -67,23 +79,26 @@ public class LinearLine {
 			return ends;
 		}
 		LinearLine pll = this.getPependicularLinearLineAt(x0, y0);
-		double x1 = x0+halfLong;
+		double offsetX = Math.sqrt((halfLong*halfLong)/(1+pll.k*pll.k));
+		double x1 = x0+offsetX;
 		double y1 = pll.calY(x1);
-		double x2 = x0-halfLong;
+		double x2 = x0-offsetX;
 		double y2 = pll.calY(x2);
-		
 		ends[0] = new Point_(x1, y1);
 		ends[1] = new Point_(x2, y2);
 		return ends;
 	}
 
 	public LinearLine getPependicularLinearLineAt(double x0, double y0) {
-		// if vertical
+		// if this line is vertical
 		if (this.vertical) {
+			//return a horizontal line
 			return new LinearLine(0, y0, false, true);
 		}
+		//if this line is horizontal
 		if (this.horizontal) {
-			return new LinearLine(0, 0, true, false);
+			//return a vertical line
+			return new LinearLine(0, x0, true, false);
 		}
 		double k_ = -1 / this.k;
 		double b_ = y0 - k_ * x0;

@@ -1,5 +1,6 @@
 package hk.microos.frames;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.image.BufferedImage;
@@ -7,13 +8,15 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 import hk.microos.data.Ellipse;
 import hk.microos.data.MyImage;
 import hk.microos.data.Point_;
-import hk.microos.tools.ClickManager;
+import hk.microos.tools.ClickHelper;
 import hk.microos.tools.ImageTool;
-import hk.microos.tools.UniverseTool;
+import hk.microos.tools.TableHelper;
+import hk.microos.tools.UniversalTool;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -32,22 +35,31 @@ import java.awt.event.InputEvent;
 import java.awt.event.ActionEvent;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Robot;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.event.MouseWheelEvent;
 
 public class MainFrame extends JFrame {
 
 	private JPanel contentPane;
-	private JTable imageListTable;
-	private JTable elpsListTable;
+	public TableHelper imgListTH;
+	
+	public TableHelper elpsListTH;
 	private JScrollPane scrollPanel;
 	private MyImagePanel imagePanel;
 	private JPanel toolPanel;
 	private JButton button;
-	private ClickManager cm;
+	private ClickHelper cm;
 	static public int defaultScrollH = -1;
 	static public int defaultScrollW = -1;
+	private JTable imgNameTable;
+	private JTable coordTable;
+	
 
 	/**
 	 * Launch the application.
@@ -73,7 +85,7 @@ public class MainFrame extends JFrame {
 	 */
 	public MainFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 979, 601);
+		setBounds(100, 100, 1195, 601);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -82,32 +94,50 @@ public class MainFrame extends JFrame {
 		scrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		imageListTable = new JTable();
-
-		elpsListTable = new JTable();
-
 		toolPanel = new JPanel();
+		
+		JScrollPane leftScrollPanel = new JScrollPane();
+		
+		
+		
+		JScrollPane rightScrollPanel = new JScrollPane();
+		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		gl_contentPane.setHorizontalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPane
-				.createSequentialGroup()
-				.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-								.addComponent(imageListTable, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(scrollPanel, GroupLayout.PREFERRED_SIZE, 643, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED).addComponent(elpsListTable,
-										GroupLayout.PREFERRED_SIZE, 193, GroupLayout.PREFERRED_SIZE))
-						.addComponent(toolPanel, GroupLayout.DEFAULT_SIZE, 957, Short.MAX_VALUE))
-				.addContainerGap()));
-		gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING).addGroup(gl_contentPane
-				.createSequentialGroup()
-				.addComponent(toolPanel, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+		gl_contentPane.setHorizontalGroup(
+			gl_contentPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(toolPanel, GroupLayout.DEFAULT_SIZE, 1173, Short.MAX_VALUE)
 						.addGroup(gl_contentPane.createSequentialGroup()
-								.addComponent(scrollPanel, GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE).addGap(6))
-						.addComponent(elpsListTable, GroupLayout.DEFAULT_SIZE, 519, Short.MAX_VALUE)
-						.addComponent(imageListTable, GroupLayout.DEFAULT_SIZE, 519, Short.MAX_VALUE))));
+							.addGap(3)
+							.addComponent(leftScrollPanel, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(scrollPanel, GroupLayout.PREFERRED_SIZE, 643, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(rightScrollPanel, GroupLayout.PREFERRED_SIZE, 286, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
+		);
+		gl_contentPane.setVerticalGroup(
+			gl_contentPane.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addComponent(toolPanel, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+								.addComponent(leftScrollPanel, GroupLayout.PREFERRED_SIZE, 516, GroupLayout.PREFERRED_SIZE)
+								.addComponent(scrollPanel, GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGap(14)
+							.addComponent(rightScrollPanel, GroupLayout.PREFERRED_SIZE, 505, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
+		);
+		
+		coordTable = new JTable();
+		rightScrollPanel.setViewportView(coordTable);
+		
+		imgNameTable = new JTable(new DefaultTableModel(new Object[]{"C1","C2","C3"},10));
+		leftScrollPanel.setViewportView(imgNameTable);
 
 		button = new JButton("TEST");
 		button.addActionListener(new ActionListener() {
@@ -129,7 +159,7 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-		cm = new ClickManager(imagePanel);
+		cm = new ClickHelper(imagePanel);
 		imagePanel.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
@@ -149,7 +179,9 @@ public class MainFrame extends JFrame {
 		scrollPanel.revalidate();
 		imagePanel.revalidate();
 		contentPane.setLayout(gl_contentPane);
-
+		
+		
+		
 	}
 
 	void setImgPanelSize(int w, int h) {

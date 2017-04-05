@@ -1,14 +1,16 @@
 package hk.microos.tools;
 
+import java.awt.BasicStroke;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
 import javax.naming.NoInitialContextException;
 
 import hk.microos.data.Ellipse;
+import hk.microos.data.Flags;
 import hk.microos.data.Point_;
 
-public class UniverseTool {
+public class UniversalTool {
 	public static boolean inBound(int minX, int minY, int maxX, int maxY, int x, int y) {
 		// System.out.format("inBound: %d %d %d %d\tXY: %d %d\n",
 		// minX,minY,maxX,maxY,x,y);
@@ -70,5 +72,24 @@ public class UniverseTool {
 		py = py>maxY? maxY:py;
 		py = py<minY? minY:py;
 		return new Point_(px,py);
+	}
+	public static BasicStroke getPreferableStroke(double distance){
+		
+		double factor = 0.03;
+		double s = distance * factor;
+		s = Math.min(Flags.maxStroke, s);
+		s = Math.max(Flags.minStroke, s);
+//		System.out.format("Distance:%.4f; S_:%s S:%s\n",distance, distance * factor, s);
+		return new BasicStroke((float)s);
+	}
+	public static Point_ getSymmetricPoint(Point_ center, Point_ A){
+		double cx = center.x;
+		double cy = center.y;
+		double ax = A.x;
+		double ay = A.y;
+		return new Point_(2*cx-ax,2*cy-ay);
+	}
+	public static double Pythagorean(double A, double B){
+		return Math.sqrt(Math.pow(A, 2)+Math.pow(B, 2));
 	}
 }

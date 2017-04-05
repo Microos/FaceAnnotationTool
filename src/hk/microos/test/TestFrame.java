@@ -17,7 +17,7 @@ import javax.swing.border.EmptyBorder;
 
 import hk.microos.data.Ellipse;
 import hk.microos.data.Point_;
-import hk.microos.tools.UniverseTool;
+import hk.microos.tools.UniversalTool;
 
 public class TestFrame extends JFrame {
 
@@ -54,18 +54,18 @@ public class TestFrame extends JFrame {
             public void paintComponent(Graphics g) {
             	Graphics2D g2d = (Graphics2D) g;
             	for(int i=0;i<200;i++){
-            		g2d.fill(UniverseTool.getPointOval(0, 10*i, 5));
-            		g2d.fill(UniverseTool.getPointOval(10*i, 0, 5));
+            		g2d.fill(UniversalTool.getPointOval(0, 10*i, 5));
+            		g2d.fill(UniversalTool.getPointOval(10*i, 0, 5));
             	}
             	
-            	Ellipse e = UniverseTool.getTestEllipse(10);
+            	Ellipse e = UniversalTool.getTestEllipse(10);
             	Ellipse2D.Double ed = e.getErectedEllipse2D();
             		
         			//save old transform
         			AffineTransform old = g2d.getTransform();
         			AffineTransform trf = new AffineTransform();
         			for (Point_ p : e.getKeyPoints()){
-        				g2d.fill(UniverseTool.getPointOval(p, 5));
+        				g2d.fill(UniversalTool.getPointOval(p, 5));
         			}
 //        			for(int i=0;i<12;i++){
 //        				g2d.setTransform(old);
