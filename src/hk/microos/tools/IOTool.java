@@ -68,13 +68,11 @@ public class IOTool {
 	public static HashMap<String, ArrayList<Ellipse>> readAnnotationFile(File f) throws Exception {
 		HashMap<String, ArrayList<Ellipse>> map = new HashMap<>();
 		ArrayList<String> lines = readText(f);
-		UniversalTool.printArray(lines);
 		String prefix = "/Users/microos/Downloads/originalPics/";
 		String suffix = ".jpg";
 		// parse annotation files
 		int at = 0;
 		while (at < lines.size()) {
-			System.out.println("at: "+at);
 			String path = prefix+lines.get(at)+suffix;
 			at++;
 			
