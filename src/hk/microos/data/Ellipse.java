@@ -1,6 +1,5 @@
 package hk.microos.data;
 
-import java.awt.List;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
