@@ -54,25 +54,31 @@ public class TableHelper {
 		//id, mja, min, angle, x, y
 		int id = 1;
 		rowStringList = new ArrayList<>();
-		rowStringList.addAll(staticCoords);
-		rowStringList.addAll(coords);
-		staticRowNum = staticCoords.size();
 		
-		for(String c: rowStringList){
-			c = String.format("%d %s", id, c);
-			String[] splitStr = c.split(" ");
-			tm.addRow(splitStr);
-			id++;
+		if(staticCoords != null){
+			rowStringList.addAll(staticCoords);
+			staticRowNum = staticCoords.size();
+			for(String c: rowStringList){
+				c = String.format("%d,%s", id, c);
+				String[] splitStr = c.split(",");
+				tm.addRow(splitStr);
+				id++;
 		}
-		for(String c: coords){
-			c = String.format("%d %s", id, c);
-			String[] splitStr = c.split(" ");
-			tm.addRow(splitStr);
-			id++;
+		if(coords != null){
+			rowStringList.addAll(coords);
+			for(String c: coords){
+				c = String.format("%d,%s", id, c);
+				String[] splitStr = c.split(",");
+				tm.addRow(splitStr);
+				id++;
+			}
 		}
+		}
+		
 	}
 
 	public void fillLeftRows(Set<String> list) {
+		//list is path string
 		clearAll();
 		
 		// fill image List
@@ -102,6 +108,8 @@ public class TableHelper {
 	}
 
 	public void setValueAt(int row, int col, Object v) {
+		if(row > this.tm.getRowCount())
+			this.tm.setRowCount(row+1);
 		tm.setValueAt(v, row, col);
 	}
 	public void clearAll(){
@@ -115,5 +123,8 @@ public class TableHelper {
 			return;
 		this.table.getSelectionModel().setSelectionInterval(row, row);
 	}
-
+	public int getRowIndexOfValue(String v){
+		if(rowStringList == null) return -1;
+		return rowStringList.indexOf(v);
+	}
 }

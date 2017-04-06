@@ -76,10 +76,10 @@ public class MyImagePanel extends JPanel {
 	public void paint(Graphics g) {
 		super.paint(g);
 		if (mImg != null) {
-			this.minX = (mImg.w < MainFrame.defaultScrollW) ? (MainFrame.defaultScrollW - mImg.w) / 2 : 0;
-			this.minY = (mImg.h < MainFrame.defaultScrollH) ? (MainFrame.defaultScrollH - mImg.h) / 2 : 0;
-			this.maxX = this.minX + mImg.w;
-			this.maxY = this.minY + mImg.h;
+			this.minX = (mImg.w() < MainFrame.defaultScrollW) ? (MainFrame.defaultScrollW - mImg.w()) / 2 : 0;
+			this.minY = (mImg.h() < MainFrame.defaultScrollH) ? (MainFrame.defaultScrollH - mImg.h()) / 2 : 0;
+			this.maxX = this.minX + mImg.w();
+			this.maxY = this.minY + mImg.h();
 			g.drawImage(mImg.getImage(), this.minX, this.minY, this);
 
 			Graphics2D g2d = (Graphics2D) g;
@@ -213,7 +213,7 @@ public class MyImagePanel extends JPanel {
 			unfinished = new ArrayList<>();
 			this.activedEllipseIdx = mImg.getElpses().size() - 1;
 		}
-		mainFrame.marksUpdated(this.mImg);
+		mainFrame.marksUpdatedAtSelected(this.mImg);
 		repaint();
 	}
 

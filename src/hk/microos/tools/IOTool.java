@@ -69,7 +69,10 @@ public class IOTool {
 		HashMap<String, ArrayList<Ellipse>> map = new HashMap<>();
 		ArrayList<String> lines = readText(f);
 		String prefix = "/Users/microos/Downloads/originalPics/";
+		prefix = "/home/rick/Space/work/FDDB/data/images/";
+		prefix = "";
 		String suffix = ".jpg";
+		
 		// parse annotation files
 		int at = 0;
 		while (at < lines.size()) {
@@ -82,7 +85,12 @@ public class IOTool {
 			ArrayList<Ellipse> elpses = readNEllipse(lines, at, detNum);
 			at += detNum;
 			
-			map.put(path, elpses);
+			if(new File(path).exists()){
+				map.put(path, elpses);
+			}else{
+				System.err.println(path+" listed in annotation files not found!");
+			}
+			
 
 		}
 

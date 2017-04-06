@@ -1,6 +1,7 @@
 package hk.microos.test;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,9 +11,7 @@ import hk.microos.tools.UniversalTool;
 public class test {
 
 	public static void main(String[] args) {
-		HashMap<Integer, String> map = new HashMap<>();
-		map.put(1, "1");
-		System.out.println(map.get(2) == null);
+		new File("/home/rick/Desktop/aaa.txt");
 		
 	}
 

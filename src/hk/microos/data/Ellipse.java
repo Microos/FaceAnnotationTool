@@ -74,7 +74,7 @@ public class Ellipse {
 		return sb.toString();
 	}
 	public String toRowFormatString(){
-		String fmt = "%.3f";
+		String fmt = "%.2f";
 		String[] strs = new String[5];
 		
 		strs[0] = String.format(fmt, this.major);

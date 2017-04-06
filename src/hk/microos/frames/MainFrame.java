@@ -45,7 +45,6 @@ import java.util.HashMap;
 
 public class MainFrame extends JFrame {
 
-
 	private static final long serialVersionUID = -2269022070473175677L;
 
 	private JPanel contentPane;
@@ -61,11 +60,11 @@ public class MainFrame extends JFrame {
 	private JTable coordTable;
 	public TableHelper imgListTH;
 	public TableHelper coordListTH;
-	private String recordedImgPath = "/home/rick/Space/work/FDDB/data/ImagePath.txt";
-	
-	private String recordedAnnotPath = "";
+	private String recordedImgPath = "/home/rick/Space/work/FDDB/data/Annotations";
+
+	private String recordedAnnotPath = "/home/rick/Space/work/FDDB/data/Annotations";
 	private JButton btnReadImageList;
-	
+
 	private int leftTableSelectedRow = -1;
 	private HashMap<String, MyImage> pathImgPair = null;
 	private HashMap<String, ArrayList<Ellipse>> pathElpsesPair = null;
@@ -82,10 +81,13 @@ public class MainFrame extends JFrame {
 					MainFrame frame = new MainFrame();
 					// frame.recordedOpenPath =
 					// System.getProperty("user.home")+"/Desktop";
-					frame.recordedImgPath = "/Users/microos/Downloads/originalPics/imgPath.txt";
-					
-//					frame.recordedAnnotPath = System.getProperty("user.home") + "/Desktop";
-					frame.recordedAnnotPath = "/Users/microos/Downloads/FDDB-folds/FDDB-fold-05-ellipseList.txt";
+					// frame.recordedImgPath =
+					// "/Users/microos/Downloads/originalPics/imgPath.txt";
+
+					// frame.recordedAnnotPath = System.getProperty("user.home")
+					// + "/Desktop";
+					// frame.recordedAnnotPath =
+					// "/Users/microos/Downloads/FDDB-folds/FDDB-fold-05-ellipseList.txt";
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -157,7 +159,7 @@ public class MainFrame extends JFrame {
 			}
 		});
 		toolPanel.add(btnReadImageList);
-		
+
 		btnReadAnnotations = new JButton("Read Annotations");
 		btnReadAnnotations.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -212,7 +214,7 @@ public class MainFrame extends JFrame {
 				leftTableOnClick(e);
 			}
 		});
-		
+
 		coordTable = new JTable(new DefaultTableModel(new Object[] { "id", "major", "minor", "angle", "x", "y" }, 0));
 		rightScrollPanel.setViewportView(coordTable);
 		coordListTH = new TableHelper(coordTable);
@@ -220,35 +222,67 @@ public class MainFrame extends JFrame {
 		coordListTH.setColSize(new int[] { 34, s, s, s, s, s });
 
 	}
-	void leftTableOnClick(ListSelectionEvent e){
+
+	void leftTableOnClick(ListSelectionEvent e) {
 		if (e.getValueIsAdjusting())
 			return;
 		leftTableSelectedRow = imgListTH.getSelectedRowIndex();
-		if(leftTableSelectedRow == -1) return;
+		if (leftTableSelectedRow == -1)
+			return;
 		int id = (int) imgListTH.getValueAt(leftTableSelectedRow, 0);
 		String path = imgListTH.getBehindRowDataAt(leftTableSelectedRow);
-		MyImage mim = getMyImageFromPathImgPair(path, id);
+		MyImage mim = getMyImageFromPathImgPair(path);
 		boolean changed = imagePanel.setCurrentImage(mim);
+		// display coords on the right
+		setRightPanelCoords(mim);
 		if (changed) {
+			// update image panel size according to the image size
 			updateImagePanelSize(mim);
-			setRightPanelCoords(mim);
 		}
 	}
-	void setRightPanelCoords(MyImage mim){
+
+	void setRightPanelCoords(MyImage mim) {
+
+		if (mim == null) {
+			System.out.println("setRightPanelCoords with null");
+			if (leftTableSelectedRow == -1) {
+				System.err.println("bad0 at setRightPanelCoords");
+				return;
+			}
+			String p = imgListTH.getBehindRowDataAt(leftTableSelectedRow);
+			mim = pathImgPair.get(p);
+			if (mim == null) {
+				System.err.println("bad1 at setRightPanelCoords");
+				return;
+			}
+			
+		}
+
+		// 1 load static ellipse into the table
+		// when pathElpsesPair set and
+		ArrayList<Ellipse> staticElps;
+		if (pathElpsesPair != null) {
+			staticElps = pathElpsesPair.get(mim.getPath());
+			mim.setElpsesStatic(staticElps);
+		}
+
+		// 2 load drawn ellipse into the table
 		coordListTH.fillRightTable(mim.getStaticElpsesStrings(), mim.getElpsesStrings());
 	}
-	void updateImagePanelSize(MyImage mim){
+
+	void updateImagePanelSize(MyImage mim) {
 		if (defaultScrollW == -1)
 			defaultScrollW = scrollPanel.getWidth();
 		if (defaultScrollH == -1)
 			defaultScrollH = scrollPanel.getHeight();
-		int imw = mim.w;
-		int imh = mim.h;
+		int imw = mim.w();
+		int imh = mim.h();
 
 		imagePanel.setCurrentImage(mim);
 		setImgPanelSize(imw, imh);
 		imagePanel.repaint();
 	}
+
 	void loadImageList() {
 		JFileChooser fc = new JFileChooser(recordedImgPath);
 		// fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -258,9 +292,9 @@ public class MainFrame extends JFrame {
 			recordedImgPath = f.getParent();
 			if (!IOTool.isTextFile(f)) {
 				// not a readable text file
-				JOptionPane.showMessageDialog(this, String
-						.format("\"%s\" \nis not a txt file.", f.getAbsolutePath()).toString(),
-						"Not a txt file", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this,
+						String.format("\"%s\" \nis not a txt file.", f.getAbsolutePath()).toString(), "Not a txt file",
+						JOptionPane.WARNING_MESSAGE);
 			} else {
 				// read
 				ArrayList<String> imgList = IOTool.readText(f);
@@ -272,16 +306,16 @@ public class MainFrame extends JFrame {
 				} else {
 					// read successes
 					// load Images to table
-					//	reset
+					// reset
 					pathImgPair = null;
 					leftTableSelectedRow = -1;
 					imagePanel.reset();
-					
+
 					pathImgPair = IOTool.filterImageList(imgList, this);
 					fillImageNameTable();
 					leftTableSelectedRow = 0;
 					imgListTH.setSelectedRow(leftTableSelectedRow);
-					
+
 				}
 			}
 
@@ -295,9 +329,10 @@ public class MainFrame extends JFrame {
 	void testTable() {
 		System.out.println(imgListTH.getTable().hashCode() == imgNameTable.hashCode());
 	}
-	void loadAnnotList(){
-		if(pathImgPair == null){
-			//no images loaded, abort
+
+	void loadAnnotList() {
+		if (pathImgPair == null) {
+			// no images loaded, abort
 			return;
 		}
 		JFileChooser fc = new JFileChooser(recordedAnnotPath);
@@ -308,47 +343,55 @@ public class MainFrame extends JFrame {
 			recordedAnnotPath = f.getParent();
 			if (!IOTool.isTextFile(f)) {
 				// not a readable text file
-				JOptionPane.showMessageDialog(this, String
-						.format("\"%s\" \nis not a txt file.", f.getAbsolutePath()).toString(),
-						"Not a txt file", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this,
+						String.format("\"%s\" \nis not a txt file.", f.getAbsolutePath()).toString(), "Not a txt file",
+						JOptionPane.WARNING_MESSAGE);
 			} else {
 				// read
 				boolean noError = true;
 				String errMessage = "";
-				try{
+				try {
 					pathElpsesPair = IOTool.readAnnotationFile(f);
-				}catch (Exception e) {
+				} catch (Exception e) {
+					pathElpsesPair = null;
 					noError = false;
 					errMessage = e.getMessage();
 				}
-				
+
 				if (noError == false) {
 					// parse failed
-					JOptionPane.showMessageDialog(this,
-							String.format("Failed to parse the file: \"%s\"\n\n"
-									+ "Error:\n%s", f.getAbsolutePath(),errMessage),
-							"Parsing failed", JOptionPane.ERROR_MESSAGE);
+					JOptionPane
+							.showMessageDialog(this,
+									String.format("Failed to parse the file: \"%s\"\n\n" + "Error:\n%s",
+											f.getAbsolutePath(), errMessage),
+									"Parsing failed", JOptionPane.ERROR_MESSAGE);
 				} else {
-//					// parse successes, reset 
-//					
-//					// put these annotations to mImg.ellispe_static
-//					for(String p: pathImgPair.keySet()){
-//						ArrayList<Ellipse> elpses = pathElpsesPair.get(p);
-//						if(elpses != null){
-//							get.setElpsesStatic(elpses);
-//						}else{
-//							System.err.println(String.format("%s not found in [pathElpsesPair], abort\n", p));
-//						}
-//					}
-//					//	reset
-//					pathImgPair = null;
-//					leftTableSelectedRow = -1;
-//					imagePanel.reset();
-					
+					// // parse successes, reset
+					//
+					// // put these annotations to mImg.ellispe_static
+					for (String p : pathImgPair.keySet()) {
+						ArrayList<Ellipse> elpses = pathElpsesPair.get(p);
+						if (elpses != null) {// annotation list contains this
+												// image's annotations
+							MyImage mim = getMyImageFromPathImgPair(p);
+							mim.setElpsesStatic(elpses);
+							// update mark nums
+						} else {
+							// System.err.println(String.format("%s not found in
+							// [pathElpsesPair], abort\n", p));
+						}
+					}
+					marksLoadAnnotationUpdate();
+					// // reset
+					// pathImgPair = null;
+					// leftTableSelectedRow = -1;
+					// imagePanel.reset();
+
 				}
 			}
 		}
 	}
+
 	void setImgPanelSize(int w, int h) {
 		w = Math.max(w, defaultScrollW);
 		h = Math.max(h, defaultScrollH);
@@ -365,8 +408,8 @@ public class MainFrame extends JFrame {
 		if (defaultScrollH == -1)
 			defaultScrollH = scrollPanel.getHeight();
 		MyImage mim = ImageTool.getTestImage();
-		int imw = mim.w;
-		int imh = mim.h;
+		int imw = mim.w();
+		int imh = mim.h();
 
 		imagePanel.setCurrentImage(mim);
 		setImgPanelSize(imw, imh);
@@ -374,19 +417,40 @@ public class MainFrame extends JFrame {
 		imagePanel.repaint();
 	}
 
-	public void marksUpdated(MyImage mim) {
-		if(leftTableSelectedRow == -1){
-			System.err.println("marking on non-loaded image?");
+	public void marksLoadAnnotationUpdate() {
+		if (pathElpsesPair == null)
+			return;
+		for (String p : pathElpsesPair.keySet()) {
+			int idx = imgListTH.getRowIndexOfValue(p);
+			MyImage mim = pathImgPair.get(p);
+			if (idx != -1 && mim != null) {
+				imgListTH.setValueAt(idx, 2, mim.getMarkNumString());
+			}
 		}
-		imgListTH.setValueAt(leftTableSelectedRow, 2, mim.getMarkNumString());
+		setRightPanelCoords(null);
 	}
 
-	MyImage getMyImageFromPathImgPair(String s, int id) {
-		MyImage img = pathImgPair.get(s);
+	public void marksUpdatedAtSelected(MyImage mim) {
+
+		if (leftTableSelectedRow == -1) {
+			System.err.println("marking on non-loaded image?");
+		}
+		// if(mim == null){
+		// String p = imgListTH.getBehindRowDataAt(leftTableSelectedRow);
+		// mim = pathImgPair.get(p);
+		// if(mim == null) System.err.println("bad at marksUpdatedAtSelected");
+		// return;
+		// }
+		imgListTH.setValueAt(leftTableSelectedRow, 2, mim.getMarkNumString());
+		setRightPanelCoords(mim);
+	}
+
+	MyImage getMyImageFromPathImgPair(String path) {
+		MyImage img = pathImgPair.get(path);
 		if (img == null) {
-			File f = new File(s);
-			img = new MyImage(f, id);
-			pathImgPair.put(s, img);
+			File f = new File(path);
+			img = new MyImage(f);
+			pathImgPair.put(path, img);
 			return img;
 		} else {
 			return img;
