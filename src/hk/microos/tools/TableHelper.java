@@ -1,11 +1,14 @@
 package hk.microos.tools;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Set;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -16,6 +19,7 @@ public class TableHelper {
 	public DefaultTableModel tm;
 	private ArrayList<String> rowStringList;
 	private int staticRowNum = 0;
+
 	public TableHelper(JTable table) {
 		this.table = table;
 		this.tm = (DefaultTableModel) table.getModel();
@@ -46,41 +50,56 @@ public class TableHelper {
 			tc.setPreferredWidth(colSize[i]);
 		}
 	}
-	
-	public void fillRightTable(ArrayList<String> staticCoords,ArrayList<String> coords) {
+
+	public void fillRightTable(ArrayList<String> staticCoords, ArrayList<String> coords) {
 		clearAll();
-		
-		//fill ellipses list
-		//id, mja, min, angle, x, y
+		// fill ellipses list
+		// id, mja, min, angle, x, y
 		int id = 1;
 		rowStringList = new ArrayList<>();
-		
-		if(staticCoords != null){
+
+		if (staticCoords != null) {
+
 			rowStringList.addAll(staticCoords);
 			staticRowNum = staticCoords.size();
-			for(String c: rowStringList){
-				c = String.format("%d,%s", id, c);
-				String[] splitStr = c.split(",");
-				tm.addRow(splitStr);
-				id++;
-		}
-		if(coords != null){
-			rowStringList.addAll(coords);
-			for(String c: coords){
+			table.setSelectionBackground(Color.RED);
+			table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+				@Override
+				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+						boolean hasFocus, int row, int column) {
+
+					final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
+							column);
+					if (!isSelected) {
+						c.setBackground(row < staticRowNum ? Color.YELLOW : Color.WHITE);
+					}
+
+					return c;
+				}
+			});
+			for (String c : rowStringList) {
 				c = String.format("%d,%s", id, c);
 				String[] splitStr = c.split(",");
 				tm.addRow(splitStr);
 				id++;
 			}
+			if (coords != null) {
+				rowStringList.addAll(coords);
+				for (String c : coords) {
+					c = String.format("%d,%s", id, c);
+					String[] splitStr = c.split(",");
+					tm.addRow(splitStr);
+					id++;
+				}
+			}
 		}
-		}
-		
+
 	}
 
 	public void fillLeftRows(Set<String> list) {
-		//list is path string
+		// list is path string
 		clearAll();
-		
+
 		// fill image List
 		// "id","Image name", "#Marks","Path prefix"
 		int id = 1;
@@ -108,23 +127,27 @@ public class TableHelper {
 	}
 
 	public void setValueAt(int row, int col, Object v) {
-		if(row > this.tm.getRowCount())
-			this.tm.setRowCount(row+1);
+		if (row > this.tm.getRowCount())
+			this.tm.setRowCount(row + 1);
 		tm.setValueAt(v, row, col);
 	}
-	public void clearAll(){
+
+	public void clearAll() {
 		for (int i = 0; i < tm.getRowCount(); i++) {
 			tm.removeRow(i);
 		}
 		tm.setRowCount(0);
 	}
+
 	public void setSelectedRow(int row) {
 		if (row >= tm.getRowCount())
 			return;
 		this.table.getSelectionModel().setSelectionInterval(row, row);
 	}
-	public int getRowIndexOfValue(String v){
-		if(rowStringList == null) return -1;
+
+	public int getRowIndexOfValue(String v) {
+		if (rowStringList == null)
+			return -1;
 		return rowStringList.indexOf(v);
 	}
 }

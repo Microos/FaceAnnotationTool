@@ -98,6 +98,45 @@ public class MyImagePanel extends JPanel {
 			drawElps(g2d, mImg.getElpses());
 			drawUnfinishedPoints(g2d);
 			drawLiveAssist(g2d);
+			drawStaticEllipses(g2d);
+		}
+	}
+
+	public void drawStaticEllipses(Graphics2D g2d) {
+		AffineTransform old = g2d.getTransform();
+		// -----------------------------------------//
+		ArrayList<Ellipse> staticEllipses = mImg.getEllipseStatic();
+		if (staticEllipses == null)
+			return;
+		int i = 0;
+		for (Ellipse e : staticEllipses) {
+			e = e.offset(minX, minY);
+			BasicStroke bs = UniversalTool.getPreferableStroke(Math.max(e.major, e.minor)*2);
+
+			
+			// do rotation
+			g2d.rotate(e.angle, e.x, e.y);
+			// draw elps
+
+			
+			Ellipse2D.Double ed = e.getErectedEllipse2D();
+			
+			
+			
+			
+			
+			g2d.setColor(Color.black);
+			g2d.setStroke(bs);
+			g2d.draw(ed);
+			
+			g2d.setColor(Color.yellow);
+			g2d.setStroke(new BasicStroke(bs.getLineWidth()/2));
+			
+			g2d.draw(ed);
+
+			// reset transform
+			g2d.setTransform(old);
+			i++;
 		}
 	}
 

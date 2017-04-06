@@ -106,9 +106,9 @@ public class IOTool {
 			if(splitStr.length < 5){
 				throw new Exception(String.format("Line %d: contains less than 5 float values.", at));
 			}
-			ArrayList<Float> splitFlt = new ArrayList<>();
+			ArrayList<Double> splitFlt = new ArrayList<>();
 			for(String s:splitStr){
-				splitFlt.add(Float.parseFloat(s));
+				splitFlt.add(Double.parseDouble(s));
 			}
 			elps.add(new Ellipse(splitFlt));
 		}
