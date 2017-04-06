@@ -14,7 +14,7 @@ public class ImageTool {
 		getTestImageRound++;
 		File f = getTestImageRound%2==0?new File("/home/rick/Downloads/a.jpg"):new File("/home/rick/Downloads/b.jpg");
 //		File f = getTestImageRound%2==0?new File("/Users/microos/Downloads/timg-3.jpeg"):new File("/Users/microos/Downloads/timg.jpg");
-		return new MyImage(f);
+		return new MyImage(f,10);
 	}
 	public static BufferedImage openImage(File f){
 		
@@ -26,4 +26,5 @@ public class ImageTool {
 		}
 		return bi;
 	}
+
 }

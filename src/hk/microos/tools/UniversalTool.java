@@ -2,7 +2,12 @@ package hk.microos.tools;
 
 import java.awt.BasicStroke;
 import java.awt.geom.Ellipse2D;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.naming.NoInitialContextException;
 
@@ -11,6 +16,7 @@ import hk.microos.data.Flags;
 import hk.microos.data.Point_;
 
 public class UniversalTool {
+	private UniversalTool(){}
 	public static boolean inBound(int minX, int minY, int maxX, int maxY, int x, int y) {
 		// System.out.format("inBound: %d %d %d %d\tXY: %d %d\n",
 		// minX,minY,maxX,maxY,x,y);
@@ -92,4 +98,26 @@ public class UniversalTool {
 	public static double Pythagorean(double A, double B){
 		return Math.sqrt(Math.pow(A, 2)+Math.pow(B, 2));
 	}
+	public static void printArray(Iterable<String> lst){
+		for(String s: lst){
+			System.out.println(s);
+		}
+	}
+	public static String[] getPrefixAndName(String s){
+		String[] sa = s.split("/");
+//		System.out.println("input string "+s);
+//		for(String t: sa){
+//			System.out.println("\t"+t);
+//		}
+		String[] prefix = Arrays.copyOfRange(sa, 0, sa.length-1);
+		String name = sa[sa.length-1];
+		String pref = String.join("/",prefix);
+		String[] ret = new String[2];
+		ret[0] = pref;
+		ret[1] = name;
+		return ret;
+		
+		
+	}
+	
 }

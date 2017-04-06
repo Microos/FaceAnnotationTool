@@ -29,7 +29,8 @@ import hk.microos.tools.UniversalTool;
  */
 
 public class MyImagePanel extends JPanel {
-	MyImage mImg = null;
+	private MyImage mImg = null;
+	MainFrame mainFrame = null;
 	JScrollPane fatherPanel = null;
 	private boolean inited = false;
 	public int minX;
@@ -46,14 +47,25 @@ public class MyImagePanel extends JPanel {
 	// closest
 	private int activedEllipseIdx = -1;
 
+	public MyImagePanel(MainFrame mainFrame, JScrollPane fatherPanel) {
+		this.mainFrame = mainFrame;
+		
+		this.fatherPanel = fatherPanel;
+	}
+
 	public MyImagePanel(JScrollPane fatherPanel) {
 		this.fatherPanel = fatherPanel;
 	}
 
-	public void setCurrentImage(MyImage myImg) {
+	public boolean setCurrentImage(MyImage myImg) {
+		if(this.mImg != null && myImg.equals(this.mImg)){
+			//no change on img
+			return false;
+		}
 		this.mImg = myImg;
 		this.inited = true;
 		this.repaint();
+		return true;
 	}
 
 	public void setLiveXY(double x, double y) {
@@ -201,6 +213,7 @@ public class MyImagePanel extends JPanel {
 			unfinished = new ArrayList<>();
 			this.activedEllipseIdx = mImg.getElpses().size()-1;
 		}
+		mainFrame.marksUpdated(this.mImg);
 		repaint();
 	}
 
@@ -253,7 +266,8 @@ public class MyImagePanel extends JPanel {
 		}
 		return minIdx;
 	}
-
+	
+	
 	public boolean isInited() {
 		return inited;
 	}
