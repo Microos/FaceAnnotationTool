@@ -1,5 +1,6 @@
 package hk.microos.data;
 
+import java.awt.List;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
@@ -7,6 +8,13 @@ public class Ellipse {
 	private ArrayList<Point_> keyPts = new ArrayList<>(); // 3 key points + 1 center
 	public double major, minor, angle, x, y; // half mj mi
 
+	public Ellipse(ArrayList<Float> v){
+		this.major = v.get(0);
+		this.minor = v.get(1);
+		this.angle = v.get(2);
+		this.x = v.get(3);
+		this.y = v.get(4);
+	}
 	public Ellipse(float major, float minor, float angle, float x, float y) {
 		this.major = major;
 		this.minor = minor;
@@ -64,6 +72,18 @@ public class Ellipse {
 		sb.append(" Major,Minor: " + this.major + ", " + this.minor + "\n");
 		sb.append(" Angle: " + this.angle + " (" + this.angle * 180 / Math.PI + "dgr)\n");
 		return sb.toString();
+	}
+	public String toRowFormatString(){
+		String fmt = "%.3f";
+		String[] strs = new String[5];
+		
+		strs[0] = String.format(fmt, this.major);
+		strs[1] = String.format(fmt, this.minor);
+		strs[2] = String.format(fmt, this.angle);
+		strs[3] = String.format(fmt, this.x);
+		strs[4] = String.format(fmt, this.y);
+		
+		return String.join(",", strs);
 	}
 
 }

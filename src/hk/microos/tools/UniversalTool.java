@@ -99,8 +99,10 @@ public class UniversalTool {
 		return Math.sqrt(Math.pow(A, 2)+Math.pow(B, 2));
 	}
 	public static void printArray(Iterable<String> lst){
+		int i = 0;
 		for(String s: lst){
-			System.out.println(s);
+			System.out.println(i+": "+s);
+			i++;
 		}
 	}
 	public static String[] getPrefixAndName(String s){

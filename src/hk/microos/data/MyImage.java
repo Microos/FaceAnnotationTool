@@ -1,6 +1,5 @@
 package hk.microos.data;
 
-import java.awt.image.AreaAveragingScaleFilter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -40,6 +39,30 @@ public class MyImage {
 	public ArrayList<Ellipse> getEllipseStatic(){
 		return elpsesStatic;
 	}
+	public ArrayList<String> getElpsesStrings(){
+		ArrayList<String> strs = new ArrayList<>();
+		for(Ellipse e : elpses){
+			strs.add(e.toRowFormatString());
+		}
+		return strs;
+	}
+	public ArrayList<String> getStaticElpsesStrings(){
+		ArrayList<String> strs = new ArrayList<>();
+		for(Ellipse e : elpsesStatic){
+			strs.add(e.toRowFormatString());
+		}
+		return strs;
+	}
+	public ArrayList<String> getAllElpsesStrings(){
+		ArrayList<String> strs = new ArrayList<>();
+		for(Ellipse e : elpses){
+			strs.add(e.toRowFormatString());
+		}
+		for(Ellipse e : elpsesStatic){
+			strs.add(e.toRowFormatString());
+		}
+		return strs;
+	}
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -48,6 +71,9 @@ public class MyImage {
 	}
 	public String getMarkNumString(){
 		return String.format("%d+%d", elpsesStatic.size(), elpses.size());
+	}
+	public void setElpsesStatic(ArrayList<Ellipse> elps){
+		this.elpsesStatic = elps;
 	}
 	
 }

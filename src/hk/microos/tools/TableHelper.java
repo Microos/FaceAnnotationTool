@@ -9,72 +9,111 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+import hk.microos.data.Ellipse;
+
 public class TableHelper {
 	private JTable table;
-	private DefaultTableModel tm;
-	private ArrayList<String> pathData;
-	public TableHelper(JTable table){
+	public DefaultTableModel tm;
+	private ArrayList<String> rowStringList;
+	private int staticRowNum = 0;
+	public TableHelper(JTable table) {
 		this.table = table;
-		this.tm = (DefaultTableModel)table.getModel();
+		this.tm = (DefaultTableModel) table.getModel();
 		basicSettings();
 	}
-	private void basicSettings(){
-		//disable editing
+
+	private void basicSettings() {
+		// disable editing
 		this.table.setDefaultEditor(Object.class, null);
-		//disable dragging column
+		// disable dragging column
 		this.table.getTableHeader().setReorderingAllowed(false);
-		//disable multi-row selction
+		// disable multi-row selction
 		this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		//this enable scroll panel scroll
+		// this enable scroll panel scroll
 		this.table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 	}
-	public JTable getTable(){
+
+	public JTable getTable() {
 		return table;
 	}
-	public void setColSize(int [] colSize){
-		if(table.getColumnCount() != colSize.length)
+
+	public void setColSize(int[] colSize) {
+		if (table.getColumnCount() != colSize.length)
 			System.err.println("Unmatched colSize array and colNum!");
-		
-		for(int i=0;i<colSize.length;i++){
+
+		for (int i = 0; i < colSize.length; i++) {
 			TableColumn tc = table.getColumnModel().getColumn(i);
 			tc.setPreferredWidth(colSize[i]);
 		}
 	}
-	public void fillRows(Set<String> list, boolean imgList){
-		for(int i=0;i<tm.getRowCount();i++){
+	
+	public void fillRightTable(ArrayList<String> staticCoords,ArrayList<String> coords) {
+		clearAll();
+		
+		//fill ellipses list
+		//id, mja, min, angle, x, y
+		int id = 1;
+		rowStringList = new ArrayList<>();
+		rowStringList.addAll(staticCoords);
+		rowStringList.addAll(coords);
+		staticRowNum = staticCoords.size();
+		
+		for(String c: rowStringList){
+			c = String.format("%d %s", id, c);
+			String[] splitStr = c.split(" ");
+			tm.addRow(splitStr);
+			id++;
+		}
+		for(String c: coords){
+			c = String.format("%d %s", id, c);
+			String[] splitStr = c.split(" ");
+			tm.addRow(splitStr);
+			id++;
+		}
+	}
+
+	public void fillLeftRows(Set<String> list) {
+		clearAll();
+		
+		// fill image List
+		// "id","Image name", "#Marks","Path prefix"
+		int id = 1;
+		rowStringList = new ArrayList<String>(list);
+		for (String s : list) {
+			String[] pn = UniversalTool.getPrefixAndName(s);
+			String prefix = pn[0];
+			String name = pn[1];
+			String mark = "-";
+			tm.addRow(new Object[] { id, name, mark, prefix });
+			id++;
+		}
+	}
+
+	public int getSelectedRowIndex() {
+		return table.getSelectedRow();
+	}
+
+	public Object getValueAt(int row, int col) {
+		return this.tm.getValueAt(row, col);
+	}
+
+	public String getBehindRowDataAt(int row) {
+		return rowStringList.get(row);
+	}
+
+	public void setValueAt(int row, int col, Object v) {
+		tm.setValueAt(v, row, col);
+	}
+	public void clearAll(){
+		for (int i = 0; i < tm.getRowCount(); i++) {
 			tm.removeRow(i);
 		}
 		tm.setRowCount(0);
-		
-		
-		if(imgList){
-			//fill image List
-			//"id","Image name", "#Marks","Path prefix"
-			int id = 1;
-			pathData = new ArrayList<String>(list);
-			for(String s: list){
-				String[] pn = UniversalTool.getPrefixAndName(s);
-				String prefix = pn[0];
-				String name = pn[1];
-				String mark = "-";
-				tm.addRow(new Object[]{id,name,mark,prefix});
-				id++;
-			}
-			
-		}else{
-		}
 	}
-	public int getSelectedRowIndex(){
-		return table.getSelectedRow();
-	}
-	public Object getValueAt(int row, int col){
-		return  this.tm.getValueAt(row, col);
-	}
-	public String getPathAt(int row){
-		return pathData.get(row);
-	}
-	public void setValueAt(int row, int col, Object v){
-		tm.setValueAt(v, row, col);
+	public void setSelectedRow(int row) {
+		if (row >= tm.getRowCount())
+			return;
+		this.table.getSelectionModel().setSelectionInterval(row, row);
 	}
 
 }

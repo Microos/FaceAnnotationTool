@@ -21,8 +21,7 @@ import hk.microos.tools.UniversalTool;
 
 /**
  * 
- * TODO: 
- *  the 3rd point may point	at out of bound when IMAGE is small 
+ * TODO: the 3rd point may point at out of bound when IMAGE is small
  * 
  * @author rick
  *
@@ -49,7 +48,7 @@ public class MyImagePanel extends JPanel {
 
 	public MyImagePanel(MainFrame mainFrame, JScrollPane fatherPanel) {
 		this.mainFrame = mainFrame;
-		
+
 		this.fatherPanel = fatherPanel;
 	}
 
@@ -58,8 +57,8 @@ public class MyImagePanel extends JPanel {
 	}
 
 	public boolean setCurrentImage(MyImage myImg) {
-		if(this.mImg != null && myImg.equals(this.mImg)){
-			//no change on img
+		if (this.mImg != null && myImg.equals(this.mImg)) {
+			// no change on img
 			return false;
 		}
 		this.mImg = myImg;
@@ -82,12 +81,12 @@ public class MyImagePanel extends JPanel {
 			this.maxX = this.minX + mImg.w;
 			this.maxY = this.minY + mImg.h;
 			g.drawImage(mImg.getImage(), this.minX, this.minY, this);
-			
-            
+
 			Graphics2D g2d = (Graphics2D) g;
-			
-			//enable higher quality
-			g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+
+			// enable higher quality
+			g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+					RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
 			g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
@@ -95,14 +94,12 @@ public class MyImagePanel extends JPanel {
 			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 			g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-			
-			
+
 			drawElps(g2d, mImg.getElpses());
 			drawUnfinishedPoints(g2d);
 			drawLiveAssist(g2d);
 		}
 	}
-
 
 	public void drawLiveAssist(Graphics2D g2d) {
 		if (!waitLastPoint)
@@ -111,41 +108,44 @@ public class MyImagePanel extends JPanel {
 		// @ Draw line between points mjA mjB
 		Point_ p1 = unfinished.get(0);
 		Point_ p2 = unfinished.get(1);
-		BasicStroke bs = UniversalTool.getPreferableStroke(0.6*UniversalTool.distance(p1, p2));
-		
-		//-> Draw the thicker line
+		BasicStroke bs = UniversalTool.getPreferableStroke(0.6 * UniversalTool.distance(p1, p2));
+		bs = new BasicStroke((float) (bs.getLineWidth() * 1.1));
+
+		// -> Draw the thicker line
 		g2d.setStroke(bs);
 		g2d.setColor(Color.WHITE);
 		g2d.drawLine((int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y);
-		
-		//-> Draw the thinner line
+
+		// -> Draw the thinner line
 		g2d.setColor(Color.BLACK);
-		g2d.setStroke(new BasicStroke(bs.getLineWidth()/3));
+		g2d.setStroke(new BasicStroke(bs.getLineWidth() / 3));
 		g2d.drawLine((int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y);
-		
-		 
+
 		// @ Draw line go throw the mid point
 		Point_ midPoint = UniversalTool.midPoint(p1, p2);
 		double disP1P2 = UniversalTool.distance(p1, p2);
 		Point_[] ends = ll.getPerpendicularLineEndPoints(midPoint.x, midPoint.y, disP1P2 / 2);
 		g2d.setColor(Color.CYAN);
+		g2d.setStroke(new BasicStroke((float) (bs.getLineWidth() * 1.3)));
 		g2d.drawLine((int) ends[0].x, (int) ends[0].y, (int) ends[1].x, (int) ends[1].y);
 
 		// @ Draw the mouse points that projected on the perpendicular line
 		LinearLine pll = ll.getPependicularLinearLineAt(midPoint.x, midPoint.y);
-		this.projPoint = pll.projectOnLine(perpendicularConstrainX, perpendicularConstrainY,minX, minY, maxX, maxY);
-		g2d.setColor(Color.YELLOW);
-		double pointWidth = bs.getLineWidth()*2.5; // point width
-		
-		//-> Bigger points
-		g2d.fill(UniversalTool.getPointOval(projPoint, pointWidth));
-		g2d.fill(UniversalTool.getPointOval(UniversalTool.getSymmetricPoint(midPoint, projPoint), pointWidth));
-		
-		//-> Outline points
-		pointWidth = pointWidth*1.1;
+		this.projPoint = pll.projectOnLine(perpendicularConstrainX, perpendicularConstrainY, minX, minY, maxX, maxY);
+
+		double pointWidth = bs.getLineWidth() * 1.5; // point width
+
+		// -> Outline points
+
 		g2d.setColor(Color.black);
 		g2d.draw(UniversalTool.getPointOval(projPoint, pointWidth));
 		g2d.draw(UniversalTool.getPointOval(UniversalTool.getSymmetricPoint(midPoint, projPoint), pointWidth));
+
+		pointWidth = pointWidth * 1.1;
+		// -> points
+		g2d.setColor(Color.YELLOW);
+		g2d.fill(UniversalTool.getPointOval(projPoint, pointWidth));
+		g2d.fill(UniversalTool.getPointOval(UniversalTool.getSymmetricPoint(midPoint, projPoint), pointWidth));
 
 	}
 
@@ -160,42 +160,42 @@ public class MyImagePanel extends JPanel {
 	}
 
 	public void drawElps(Graphics2D g2d, ArrayList<Ellipse> elpses) {
-		if(!unfinished.isEmpty()) this.activedEllipseIdx = -1;
+		if (!unfinished.isEmpty())
+			this.activedEllipseIdx = -1;
 		AffineTransform old = g2d.getTransform();
 		// -----------------------------------------//
-		
+
 		int i = 0;
 		for (Ellipse e : elpses) {
 			ArrayList<Point_> keyPoints = e.getKeyPoints();
-			
+
 			BasicStroke bs = UniversalTool.getPreferableStroke(Math.max(e.major, e.minor));
-			
+
 			g2d.setStroke(bs);
 			// do rotation
 			g2d.rotate(e.angle, e.x, e.y);
 			// draw elps
-			
-			if(i == this.activedEllipseIdx){
+
+			if (i == this.activedEllipseIdx) {
 				g2d.setColor(Color.magenta);
-			}else{
+			} else {
 				g2d.setColor(Color.GREEN);
 			}
-			
-			
+
 			Ellipse2D.Double ed = e.getErectedEllipse2D();
 			g2d.draw(ed);
 
 			// reset transform
 			g2d.setTransform(old);
 			// draw keypoints
-			
-			if(i == this.activedEllipseIdx){
+
+			if (i == this.activedEllipseIdx) {
 				g2d.setColor(Color.white);
-			}else{
+			} else {
 				g2d.setColor(Color.red);
 			}
 			for (Point_ p : keyPoints) {
-				g2d.fill(UniversalTool.getPointOval(p, 2.2*bs.getLineWidth()));
+				g2d.fill(UniversalTool.getPointOval(p, 2.2 * bs.getLineWidth()));
 			}
 			i++;
 		}
@@ -211,7 +211,7 @@ public class MyImagePanel extends JPanel {
 		if (unfinished.size() == 3) {
 			mImg.addElps(new Ellipse(unfinished.get(0), unfinished.get(1), this.projPoint));
 			unfinished = new ArrayList<>();
-			this.activedEllipseIdx = mImg.getElpses().size()-1;
+			this.activedEllipseIdx = mImg.getElpses().size() - 1;
 		}
 		mainFrame.marksUpdated(this.mImg);
 		repaint();
@@ -238,7 +238,7 @@ public class MyImagePanel extends JPanel {
 		if (unfinished.size() != 0) {
 			// canont remove any ellipse, just remove unfinished
 			unfinished.remove(unfinished.size() - 1);
-			
+
 		} else {
 			ArrayList<Ellipse> elpses = mImg.getElpses();
 			if (elpses.size() != 0 && this.activedEllipseIdx != -1) {
@@ -266,8 +266,28 @@ public class MyImagePanel extends JPanel {
 		}
 		return minIdx;
 	}
-	
-	
+
+	public void reset() {
+		if (!isInited())
+			return;
+		mImg = null;
+		inited = false;
+		minX = 0;
+		minY = 0;
+		maxX = 0;
+		maxY = 0;
+
+		// used in 2-point live draw
+		waitLastPoint = false;
+		LinearLine ll = null;
+		perpendicularConstrainX = 0;
+		perpendicularConstrainY = 0;
+		Point_ projPoint = null;
+		unfinished = new ArrayList<>();
+		// closest
+		activedEllipseIdx = -1;
+	}
+
 	public boolean isInited() {
 		return inited;
 	}
