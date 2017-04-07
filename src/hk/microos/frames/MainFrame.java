@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import hk.microos.data.Ellipse;
+import hk.microos.data.Flags;
 import hk.microos.data.MyImage;
 import hk.microos.tools.ClickHelper;
 import hk.microos.tools.IOTool;
@@ -63,13 +64,16 @@ public class MainFrame extends JFrame {
 	private String recordedImgPath = "/home/rick/Space/work/FDDB/data/Annotations";
 
 	private String recordedAnnotPath = "/home/rick/Space/work/FDDB/data/Annotations";
+	private String recordedSavePath = "/home/rick/Space/work/FDDB/data/Annotations";
 	private JButton btnReadImageList;
 
 	private int leftTableSelectedRow = -1;
 	private HashMap<String, MyImage> pathImgPair = null;
 	private HashMap<String, ArrayList<Ellipse>> pathElpsesPair = null;
 	private JButton btnReadAnnotations;
-
+	private String annotContentPrefix = null;
+	private String annotContentSuffix = null;
+	private JButton btnOutputAnnotation;
 	/**
 	 * Launch the application.
 	 */
@@ -81,13 +85,13 @@ public class MainFrame extends JFrame {
 					MainFrame frame = new MainFrame();
 					// frame.recordedOpenPath =
 					// System.getProperty("user.home")+"/Desktop";
-					// frame.recordedImgPath =
-					// "/Users/microos/Downloads/originalPics/imgPath.txt";
+					 frame.recordedImgPath =
+					 "/Users/microos/Downloads/originalPics/imgPath.txt";
 
 					// frame.recordedAnnotPath = System.getProperty("user.home")
 					// + "/Desktop";
-					// frame.recordedAnnotPath =
-					// "/Users/microos/Downloads/FDDB-folds/FDDB-fold-05-ellipseList.txt";
+					 frame.recordedAnnotPath =
+					 "/Users/microos/Downloads/FDDB-folds/FDDB-fold-05-ellipseList.txt";
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -167,6 +171,14 @@ public class MainFrame extends JFrame {
 			}
 		});
 		toolPanel.add(btnReadAnnotations);
+		
+		btnOutputAnnotation = new JButton("Output Annotation");
+		btnOutputAnnotation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				outputAnnotations();
+			}
+		});
+		toolPanel.add(btnOutputAnnotation);
 
 		imagePanel = new MyImagePanel(this, scrollPanel);
 		imagePanel.addMouseListener(new MouseAdapter() {
@@ -242,7 +254,8 @@ public class MainFrame extends JFrame {
 	}
 
 	void setRightPanelCoords(MyImage mim) {
-
+		//call this will update right panel with image's staticEllipse/Ellipse
+		//use null as the arg will use a selectedRow as target image
 		if (mim == null) {
 			System.out.println("setRightPanelCoords with null");
 			if (leftTableSelectedRow == -1) {
@@ -307,14 +320,15 @@ public class MainFrame extends JFrame {
 					// read successes
 					// load Images to table
 					// reset
-					pathImgPair = null;
-					leftTableSelectedRow = -1;
-					imagePanel.reset();
+//					pathImgPair = null;
+//					leftTableSelectedRow = -1;
+//					imagePanel.reset();
 
 					pathImgPair = IOTool.filterImageList(imgList, this);
 					fillImageNameTable();
 					leftTableSelectedRow = 0;
 					imgListTH.setSelectedRow(leftTableSelectedRow);
+					freezeReadImageListBtn();
 
 				}
 			}
@@ -335,6 +349,16 @@ public class MainFrame extends JFrame {
 			// no images loaded, abort
 			return;
 		}
+		if(annotContentPrefix == null){
+			String s = JOptionPane.showInputDialog(this, "Please set a prefix string for your annotation image path.\n(leave empty or cancel if not necessary)", "Prefix", JOptionPane.QUESTION_MESSAGE);
+			annotContentPrefix = s==null? "" : s;
+			
+			s = JOptionPane.showInputDialog(this, "Please set a suffix(usually is image format extention) for your annotation image path.\n(leave empty or cancel if not necessary)", "Suffix", JOptionPane.QUESTION_MESSAGE);
+			annotContentSuffix = s==null? "" : s;
+			
+			
+			
+		}
 		JFileChooser fc = new JFileChooser(recordedAnnotPath);
 		// fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		int res = fc.showOpenDialog(this);
@@ -351,7 +375,7 @@ public class MainFrame extends JFrame {
 				boolean noError = true;
 				String errMessage = "";
 				try {
-					pathElpsesPair = IOTool.readAnnotationFile(f);
+					pathElpsesPair = IOTool.readAnnotationFile(f, annotContentPrefix, annotContentSuffix);
 				} catch (Exception e) {
 					pathElpsesPair = null;
 					noError = false;
@@ -382,6 +406,8 @@ public class MainFrame extends JFrame {
 						}
 					}
 					marksLoadAnnotationUpdate();
+					imagePanel.repaint();
+					freezeReadAnnotationBtn();
 					// // reset
 					// pathImgPair = null;
 					// leftTableSelectedRow = -1;
@@ -431,7 +457,7 @@ public class MainFrame extends JFrame {
 	}
 
 	public void marksUpdatedAtSelected(MyImage mim) {
-
+		
 		if (leftTableSelectedRow == -1) {
 			System.err.println("marking on non-loaded image?");
 		}
@@ -444,7 +470,12 @@ public class MainFrame extends JFrame {
 		imgListTH.setValueAt(leftTableSelectedRow, 2, mim.getMarkNumString());
 		setRightPanelCoords(mim);
 	}
-
+	public void freezeReadImageListBtn(){
+		this.btnReadImageList.setEnabled(false);
+	}
+	public void freezeReadAnnotationBtn(){
+		this.btnReadAnnotations.setEnabled(false);
+	}
 	MyImage getMyImageFromPathImgPair(String path) {
 		MyImage img = pathImgPair.get(path);
 		if (img == null) {
@@ -455,6 +486,54 @@ public class MainFrame extends JFrame {
 		} else {
 			return img;
 		}
+	}
+	void outputAnnotations(){
+		if(pathImgPair == null){
+			return; //even no image loaded? abort
+		}
+		if(Flags.numNewEllipse <= 0){
+			JOptionPane.showMessageDialog(this, "You did not mark any annotations, nothing to output.","Nothing to output",JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		//open a chooser
+		//make it a .txt file
+		//output only the new Ellipse
+		
+		JFileChooser fc = new JFileChooser(recordedSavePath);
+		// fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		int res = fc.showOpenDialog(this);
+		if (res == JFileChooser.APPROVE_OPTION) {
+			File f = fc.getSelectedFile();
+			recordedImgPath = f.getParent();
+			if (!IOTool.isTextFile(f)) {
+				// not a readable text file
+				JOptionPane.showMessageDialog(this,
+						String.format("\"%s\" \nis not a txt file.", f.getAbsolutePath()).toString(), "Not a txt file",
+						JOptionPane.WARNING_MESSAGE);
+			} else {
+				// read
+				ArrayList<String> imgList = IOTool.readText(f);
+				if (imgList == null) {
+					// read failed
+					JOptionPane.showMessageDialog(this,
+							String.format("\"%s\" \ncannot be properly read.", f.getAbsolutePath()).toString(),
+							"Reading failed", JOptionPane.WARNING_MESSAGE);
+				} else {
+					// read successes
+					// load Images to table
+					// reset
+//					pathImgPair = null;
+//					leftTableSelectedRow = -1;
+//					imagePanel.reset();
 
+					pathImgPair = IOTool.filterImageList(imgList, this);
+					fillImageNameTable();
+					leftTableSelectedRow = 0;
+					imgListTH.setSelectedRow(leftTableSelectedRow);
+					freezeReadImageListBtn();
+
+				}
+			}
+		}
 	}
 }

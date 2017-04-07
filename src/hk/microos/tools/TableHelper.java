@@ -33,6 +33,7 @@ public class TableHelper {
 		this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		// this enable scroll panel scroll
 		this.table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		
 	}
 
 	public JTable getTable() {
@@ -51,16 +52,17 @@ public class TableHelper {
 
 	public void fillRightTable(ArrayList<String> staticCoords, ArrayList<String> coords) {
 		clearAll();
+		// set red color as selected color
+		table.setSelectionBackground(Color.RED);
 		// fill ellipses list
 		// id, mja, min, angle, x, y
 		int id = 1;
 		rowStringList = new ArrayList<>();
 
 		if (staticCoords != null) {
-
 			rowStringList.addAll(staticCoords);
 			staticRowNum = staticCoords.size();
-			table.setSelectionBackground(Color.RED);
+			
 			table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
 				@Override
 				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -75,21 +77,23 @@ public class TableHelper {
 					return c;
 				}
 			});
-			for (String c : rowStringList) {
-				c = String.format("%d,%s", id, c);
-				String[] splitStr = c.split(",");
-				tm.addRow(splitStr);
-				id++;
-			}
-			if (coords != null) {
-				rowStringList.addAll(coords);
-				for (String c : coords) {
-					c = String.format("%d,%s", id, c);
-					String[] splitStr = c.split(",");
-					tm.addRow(splitStr);
-					id++;
-				}
-			}
+			
+		}
+		
+		if (coords != null) {
+			rowStringList.addAll(coords);
+//			for (String c : coords) {
+//				c = String.format("%d,%s", id, c);
+//				String[] splitStr = c.split(",");
+//				tm.addRow(splitStr);
+//				id++;
+//			}
+		}
+		for (String c : rowStringList) {//add onto right table
+			c = String.format("%d,%s", id, c);
+			String[] splitStr = c.split(",");
+			tm.addRow(splitStr);
+			id++;
 		}
 
 	}

@@ -1,6 +1,7 @@
 package hk.microos.tools;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -12,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import hk.microos.data.Ellipse;
+import hk.microos.data.Flags;
 import hk.microos.data.MyImage;
 
 public class IOTool {
@@ -64,50 +66,68 @@ public class IOTool {
 		}
 		return map;
 	}
+	private static void writeFile(String txtPath, String content) {
+		File f = new File(txtPath);
+		FileWriter fw;
+		try {
+			if (!f.exists())
+				f.createNewFile();
 
-	public static HashMap<String, ArrayList<Ellipse>> readAnnotationFile(File f) throws Exception {
+			fw = new FileWriter(f);
+			fw.write(content);
+			fw.flush();
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public static HashMap<String, ArrayList<Ellipse>> readAnnotationFile(File f, String prefix, String suffix) throws Exception {
 		HashMap<String, ArrayList<Ellipse>> map = new HashMap<>();
 		ArrayList<String> lines = readText(f);
-		String prefix = "/Users/microos/Downloads/originalPics/";
-		prefix = "/home/rick/Space/work/FDDB/data/images/";
-		prefix = "";
-		String suffix = ".jpg";
 		
+		if(Flags.GLOABAL_DEBUG){
+			prefix = "/Users/microos/Downloads/originalPics/";
+			// prefix = "/home/rick/Space/work/FDDB/data/images/";
+			// prefix = "";
+			
+			suffix = ".jpg";
+		}
+		
+
 		// parse annotation files
 		int at = 0;
 		while (at < lines.size()) {
-			String path = prefix+lines.get(at)+suffix;
+			String path = prefix + lines.get(at) + suffix;
 			at++;
-			
+
 			int detNum = Integer.parseInt(lines.get(at));
 			at++;
-			
+
 			ArrayList<Ellipse> elpses = readNEllipse(lines, at, detNum);
 			at += detNum;
-			
-			if(new File(path).exists()){
+
+			if (new File(path).exists()) {
 				map.put(path, elpses);
-			}else{
-				System.err.println(path+" listed in annotation files not found!");
+			} else {
+				System.err.println(path + " listed in annotation files not found!");
 			}
-			
 
 		}
 
 		return map;
 	}
 
-	private static ArrayList<Ellipse> readNEllipse(ArrayList<String> lines, int start, int num) throws Exception{
+	private static ArrayList<Ellipse> readNEllipse(ArrayList<String> lines, int start, int num) throws Exception {
 		ArrayList<Ellipse> elps = new ArrayList<>();
 		for (int i = 0; i < num; i++) {
 			int at = start + i;
 			String line = lines.get(at);
 			String[] splitStr = line.split(" +");
-			if(splitStr.length < 5){
+			if (splitStr.length < 5) {
 				throw new Exception(String.format("Line %d: contains less than 5 float values.", at));
 			}
 			ArrayList<Double> splitFlt = new ArrayList<>();
-			for(String s:splitStr){
+			for (String s : splitStr) {
 				splitFlt.add(Double.parseDouble(s));
 			}
 			elps.add(new Ellipse(splitFlt));

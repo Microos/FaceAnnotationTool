@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.plaf.synth.SynthSpinnerUI;
 
 import hk.microos.data.Ellipse;
+import hk.microos.data.Flags;
 import hk.microos.data.LinearLine;
 import hk.microos.data.MyImage;
 import hk.microos.data.Point_;
@@ -249,6 +250,7 @@ public class MyImagePanel extends JPanel {
 		}
 		if (unfinished.size() == 3) {
 			mImg.addElps(new Ellipse(unfinished.get(0), unfinished.get(1), this.projPoint));
+			Flags.numNewEllipse ++;
 			unfinished = new ArrayList<>();
 			this.activedEllipseIdx = mImg.getElpses().size() - 1;
 		}
@@ -257,17 +259,16 @@ public class MyImagePanel extends JPanel {
 	}
 
 	public void addUnfinishedPoint(Point_ p) {
-
+		mainFrame.freezeReadAnnotationBtn();
 		unfinished.add(p);
 		updateStatus();
 	}
 
 	public void activateClosest(int x, int y) {
-		// try to remove the closest one, if the unfinished is clear
+		//if found that we still have jobs to be done OR no ellipse can be deleted --> abort
 		if (unfinished.size() != 0 || mImg.getElpses().size() == 0) {
 			return;
 		}
-		// when it indeed is clear
 		Point_ p = new Point_(x, y);
 		this.activedEllipseIdx = findTheClosestEllipse(p);
 		this.repaint();
@@ -275,10 +276,11 @@ public class MyImagePanel extends JPanel {
 
 	public void removeActived() {
 		if (unfinished.size() != 0) {
-			// canont remove any ellipse, just remove unfinished
+			// cannot remove any ellipse, just remove unfinished point
 			unfinished.remove(unfinished.size() - 1);
 
 		} else {
+			Flags.numNewEllipse --;
 			ArrayList<Ellipse> elpses = mImg.getElpses();
 			if (elpses.size() != 0 && this.activedEllipseIdx != -1) {
 				Ellipse e = elpses.remove(this.activedEllipseIdx);
