@@ -53,19 +53,42 @@ public class IOTool {
 	public static HashMap filterImageList(ArrayList<String> list, JFrame dialogFatherFrame) {
 		HashMap<String, MyImage> map = new HashMap<>();
 		ArrayList<String> failed = new ArrayList<>();
+		int failedNum = 0;
 		for (String l : list) {
+			if(l.trim().equals("")){
+				continue;
+			}
 			if (!new File(l).exists()) {
-				
-				failed.add(l);
+				failedNum++;
+				if (failed.size() < 10) {
+					failed.add(l);
+				}
+
 				continue;
 			}
 			map.put(l, null);
 		}
-
+		if (map.size() == 0) {
+			JOptionPane.showMessageDialog(dialogFatherFrame,
+					"None of the images found from paths listed in the seletced file.\nPlease check your file and try again.",
+					"All failed", JOptionPane.WARNING_MESSAGE);
+			return map;
+		}
 		if (failed.size() != 0) {
-			String s = String.join("\n", failed);
-			JOptionPane.showMessageDialog(dialogFatherFrame, String.format("Existing check failed files:\n%s", s),
-					"Existing check failed files", JOptionPane.WARNING_MESSAGE);
+			String s = "";
+			if (failed.size() != failedNum) {
+				s = String.format("Existence checking failed paths(%d listed, %d in total):\n", failed.size(),
+						failedNum);
+			} else {
+				s = String.format("Existence checking failed paths(total: %d):\n", failed.size());
+			}
+			int i = 1;
+			for (String f : failed) {
+				s += String.format("%2d [%s]\n", i, f);
+				i++;
+			}
+			JOptionPane.showMessageDialog(dialogFatherFrame, s, "Existence checking failed paths",
+					JOptionPane.WARNING_MESSAGE);
 		}
 		return map;
 	}
@@ -170,12 +193,13 @@ public class IOTool {
 			MyImage mim = UniversalTool.getMyImageFromPathImgPair(p, pathImgPair);
 			String s = mim.getOutputString(withBoth);
 			sb.append(s);
-			if(!s.equals("")){
-				 numImage ++;
-				 numAnnot+= s.split("\n").length-2;
+			if (!s.equals("")) {
+				numImage++;
+				numAnnot += s.split("\n").length - 2;
 			}
 		}
 		writeFile(f, sb.toString());
-		JOptionPane.showMessageDialog(dialogFatherFrame, String.format("%d annotations from %d images \nhave been written to %s", numAnnot,numImage, f.getAbsolutePath()));
+		JOptionPane.showMessageDialog(dialogFatherFrame, String.format(
+				"%d annotations from %d images \nhave been written to %s", numAnnot, numImage, f.getAbsolutePath()));
 	}
 }

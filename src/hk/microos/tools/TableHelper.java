@@ -82,12 +82,6 @@ public class TableHelper {
 		
 		if (coords != null) {
 			rowStringList.addAll(coords);
-//			for (String c : coords) {
-//				c = String.format("%d,%s", id, c);
-//				String[] splitStr = c.split(",");
-//				tm.addRow(splitStr);
-//				id++;
-//			}
 		}
 		for (String c : rowStringList) {//add onto right table
 			c = String.format("%d,%s", id, c);
@@ -141,7 +135,7 @@ public class TableHelper {
 		tm.setRowCount(0);
 	}
 
-	public void setSelectedRow(int row) {
+	public void setSelectedRow(int row){
 		if (row >= tm.getRowCount())
 			return;
 		this.table.getSelectionModel().setSelectionInterval(row, row);
@@ -154,5 +148,8 @@ public class TableHelper {
 		if (rowStringList == null)
 			return -1;
 		return rowStringList.indexOf(v);
+	}
+	public void deselect(){
+		this.table.getSelectionModel().clearSelection();
 	}
 }

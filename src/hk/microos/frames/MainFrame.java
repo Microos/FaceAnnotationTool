@@ -107,6 +107,8 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
+		setResizable(false);
+		setTitle("Face Annotation Tool");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1195, 601);
 		contentPane = new JPanel();
@@ -124,36 +126,41 @@ public class MainFrame extends JFrame {
 		JScrollPane rightScrollPanel = new JScrollPane();
 
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		gl_contentPane.setHorizontalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPane
-				.createSequentialGroup()
-				.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(toolPanel, GroupLayout.DEFAULT_SIZE, 1173, Short.MAX_VALUE)
-						.addGroup(gl_contentPane.createSequentialGroup().addGap(3)
-								.addComponent(leftScrollPanel, GroupLayout.PREFERRED_SIZE, 230,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(scrollPanel, GroupLayout.PREFERRED_SIZE, 643, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED).addComponent(rightScrollPanel,
-										GroupLayout.PREFERRED_SIZE, 286, GroupLayout.PREFERRED_SIZE)))
-				.addContainerGap()));
-		gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING).addGroup(gl_contentPane
-				.createSequentialGroup()
-				.addComponent(toolPanel, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
-				.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_contentPane.createSequentialGroup().addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-										.addComponent(leftScrollPanel, GroupLayout.PREFERRED_SIZE, 516,
-												GroupLayout.PREFERRED_SIZE)
-										.addComponent(scrollPanel, GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)))
-						.addGroup(gl_contentPane.createSequentialGroup().addGap(14).addComponent(rightScrollPanel,
-								GroupLayout.PREFERRED_SIZE, 505, GroupLayout.PREFERRED_SIZE)))
-				.addContainerGap()));
+		gl_contentPane.setHorizontalGroup(
+			gl_contentPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(toolPanel, GroupLayout.DEFAULT_SIZE, 1174, Short.MAX_VALUE)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGap(3)
+							.addComponent(leftScrollPanel, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(scrollPanel, GroupLayout.PREFERRED_SIZE, 643, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(rightScrollPanel, GroupLayout.PREFERRED_SIZE, 286, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
+		);
+		gl_contentPane.setVerticalGroup(
+			gl_contentPane.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addComponent(toolPanel, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+								.addComponent(leftScrollPanel, GroupLayout.PREFERRED_SIZE, 516, GroupLayout.PREFERRED_SIZE)
+								.addComponent(scrollPanel, GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGap(14)
+							.addComponent(rightScrollPanel, GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)))
+					.addContainerGap())
+		);
 
 		button = new JButton("TEST");
+		button.setVisible(false);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				imgListTH.tm.setRowCount(0);
-				System.out.println("src = 0");
+				coordListTH.clearAll();
 			}
 		});
 		toolPanel.add(button);
@@ -207,7 +214,7 @@ public class MainFrame extends JFrame {
 			}
 		});
 		imagePanel.setForeground(Color.WHITE);
-		imagePanel.setBackground(Color.ORANGE);
+		imagePanel.setBackground(new Color(250, 250, 210));
 
 		imagePanel.setSize(1, 1);
 		scrollPanel.setViewportView(imagePanel);
@@ -245,7 +252,9 @@ public class MainFrame extends JFrame {
 	void rightTableOnClick(ListSelectionEvent e){
 		if (e.getValueIsAdjusting())
 			return;
+		
 		int rowIdx = coordListTH.getSelectedRowIndex();
+		
 		cm.clickOnRightTable(rowIdx);
 	}
 	void leftTableOnClick(ListSelectionEvent e) {
@@ -270,15 +279,14 @@ public class MainFrame extends JFrame {
 		//call this will update right panel with image's staticEllipse/Ellipse
 		//use null as the arg will use a selectedRow as target image
 		if (mim == null) {
-			System.out.println("setRightPanelCoords with null");
 			if (leftTableSelectedRow == -1) {
-				System.err.println("bad0 at setRightPanelCoords");
+				System.err.println("bad-0 at setRightPanelCoords");
 				return;
 			}
 			String p = imgListTH.getBehindRowDataAt(leftTableSelectedRow);
 			mim = pathImgPair.get(p);
 			if (mim == null) {
-				System.err.println("bad1 at setRightPanelCoords");
+				System.err.println("bad-1 at setRightPanelCoords");
 				return;
 			}
 			
@@ -333,6 +341,7 @@ public class MainFrame extends JFrame {
 
 					pathImgPair = IOTool.filterImageList(imgList, this);
 					if(pathImgPair.size() == 0){
+						pathImgPair = null;
 						return;
 					}
 					fillImageNameTable();
@@ -474,12 +483,6 @@ public class MainFrame extends JFrame {
 		if (leftTableSelectedRow == -1) {
 			System.err.println("marking on non-loaded image?");
 		}
-		// if(mim == null){
-		// String p = imgListTH.getBehindRowDataAt(leftTableSelectedRow);
-		// mim = pathImgPair.get(p);
-		// if(mim == null) System.err.println("bad at marksUpdatedAtSelected");
-		// return;
-		// }
 		imgListTH.setValueAt(leftTableSelectedRow, 2, mim.getMarkNumString());
 		setRightPanelCoords(mim);
 	}

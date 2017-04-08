@@ -46,7 +46,7 @@ public class MyImagePanel extends JPanel {
 	private ArrayList<Point_> unfinished = new ArrayList<>();
 	// closest
 	private int activedEllipseIdx = -1;
-
+	private int highlightedStaticEllipseIdx = -1;
 	public MyImagePanel(MainFrame mainFrame, JScrollPane fatherPanel) {
 		this.mainFrame = mainFrame;
 
@@ -64,6 +64,8 @@ public class MyImagePanel extends JPanel {
 		}
 		this.mImg = myImg;
 		this.inited = true;
+		activedEllipseIdx = -1;
+		highlightedStaticEllipseIdx = -1;
 		this.repaint();
 		return true;
 	}
@@ -128,8 +130,12 @@ public class MyImagePanel extends JPanel {
 			// draw elps
 
 			Ellipse2D.Double ed = e.getErectedEllipse2D();
-
-			g2d.setColor(Color.black);
+			if(i == highlightedStaticEllipseIdx){
+				g2d.setColor(Color.red);
+			}else{
+				g2d.setColor(Color.black);
+			}
+			
 			g2d.setStroke(bs);
 			g2d.draw(ed);
 
@@ -203,8 +209,11 @@ public class MyImagePanel extends JPanel {
 	}
 
 	public void drawElps(Graphics2D g2d, ArrayList<Ellipse> elpses) {
-		if (!unfinished.isEmpty())
+		if (!unfinished.isEmpty()){
 			this.activedEllipseIdx = -1;
+			mainFrame.coordListTH.deselect();
+		}
+			
 		AffineTransform old = g2d.getTransform();
 		// -----------------------------------------//
 
@@ -253,6 +262,7 @@ public class MyImagePanel extends JPanel {
 			waitLastPoint = true;
 			ll = new LinearLine(unfinished.get(0), unfinished.get(1));
 		}
+		int idx = -1;
 		if (unfinishedSize == 3) {
 			Ellipse e = new Ellipse(unfinished.get(0), unfinished.get(1), this.projPoint);
 			e.setOffsetForTableDisplay(this.minX, this.minY);
@@ -260,17 +270,19 @@ public class MyImagePanel extends JPanel {
 			Flags.numNewEllipse++;
 			unfinished = new ArrayList<>();
 			this.activedEllipseIdx = mImg.getElpses().size() - 1;
-
+			
+			idx  = this.activedEllipseIdx + getStaticEllipsesCount();
+			mainFrame.marksUpdatedAtSelectedImage(this.mImg);
+			mainFrame.coordListTH.rightPanelSetSelectedLine(idx);
 		}
-		mainFrame.marksUpdatedAtSelectedImage(this.mImg);
-		if (unfinishedSize == 3) {
-			mainFrame.coordListTH.rightPanelSetSelectedLine(this.activedEllipseIdx + getStaticEllipsesCount());
-		}
+		
+		
 		repaint();
 	}
 
 	public void addUnfinishedPoint(Point_ p) {
 		mainFrame.freezeReadAnnotationBtn();
+		this.highlightedStaticEllipseIdx = -1;
 		unfinished.add(p);
 		updateStatus();
 	}
@@ -283,11 +295,13 @@ public class MyImagePanel extends JPanel {
 		}
 		Point_ p = new Point_(x, y);
 		this.activedEllipseIdx = findTheClosestEllipse(p);
+		this.highlightedStaticEllipseIdx = -1;
 		mainFrame.coordListTH.rightPanelSetSelectedLine(this.activedEllipseIdx + getStaticEllipsesCount());
 		this.repaint();
 	}
 
 	public void removeActived() {
+		
 		if (unfinished.size() != 0) {
 			// cannot remove any ellipse, just remove unfinished point
 			unfinished.remove(unfinished.size() - 1);
@@ -302,11 +316,16 @@ public class MyImagePanel extends JPanel {
 				unfinished.add(keyPoints.get(1));
 			}
 		}
+		
 		updateStatus();
+		mainFrame.marksUpdatedAtSelectedImage(mImg);
+		
+		this.highlightedStaticEllipseIdx = -1;
+		this.repaint();
 	}
 
 	public int findTheClosestEllipse(Point_ p) {
-		// return index
+		// return the closet ellipse's index
 		double minDis = Double.MAX_VALUE;
 		int minIdx = -1;
 		ArrayList<Ellipse> elpses = mImg.getElpses();
@@ -322,35 +341,24 @@ public class MyImagePanel extends JPanel {
 	}
 
 	public void setActivatedIndex(int rowIdx) {
-		rowIdx -= getStaticEllipsesCount();
-		if (rowIdx >= 0 && unfinished.size() == 0) {
-			activedEllipseIdx = rowIdx;
-			this.repaint();
+		if(rowIdx < 0) {
+			highlightedStaticEllipseIdx =-1;
+			repaint();
+			return;
+		}
+		highlightedStaticEllipseIdx = -1;
+		int seCount = getStaticEllipsesCount();
+		if (rowIdx -seCount >= 0 && unfinished.size() == 0) {
+			activedEllipseIdx = rowIdx-seCount;
+			
 		}else{
+			
+			highlightedStaticEllipseIdx =rowIdx;
 			activedEllipseIdx = -1;
 		}
+		this.repaint();
 	}
 
-	public void reset() {
-		if (!isInited())
-			return;
-		mImg = null;
-		inited = false;
-		minX = 0;
-		minY = 0;
-		maxX = 0;
-		maxY = 0;
-
-		// used in 2-point live draw
-		waitLastPoint = false;
-		LinearLine ll = null;
-		perpendicularConstrainX = 0;
-		perpendicularConstrainY = 0;
-		Point_ projPoint = null;
-		unfinished = new ArrayList<>();
-		// closest
-		activedEllipseIdx = -1;
-	}
 
 	public boolean isInited() {
 		return inited;
