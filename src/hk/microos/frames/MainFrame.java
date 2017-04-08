@@ -234,9 +234,20 @@ public class MainFrame extends JFrame {
 		coordListTH = new TableHelper(coordTable);
 		int s = 50;
 		coordListTH.setColSize(new int[] { 34, s, s, s, s, s });
-
+		ListSelectionModel csm = coordTable.getSelectionModel();
+		csm.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				rightTableOnClick(e);
+			}
+		});
 	}
-
+	void rightTableOnClick(ListSelectionEvent e){
+		if (e.getValueIsAdjusting())
+			return;
+		int rowIdx = coordListTH.getSelectedRowIndex();
+		cm.clickOnRightTable(rowIdx);
+	}
 	void leftTableOnClick(ListSelectionEvent e) {
 		if (e.getValueIsAdjusting())
 			return;

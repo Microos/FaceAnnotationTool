@@ -73,17 +73,19 @@ public class MyImagePanel extends JPanel {
 		this.perpendicularConstrainY = y;
 		this.repaint();
 	}
-	private void setOffset(double[] offset){
+
+	private void setOffset(double[] offset) {
 		this.minX = offset[0];
 		this.minY = offset[1];
 		this.maxX = offset[2];
 		this.maxY = offset[3];
 	}
+
 	public void paint(Graphics g) {
 		super.paint(g);
 		if (mImg != null) {
 			setOffset(UniversalTool.getOffset(mImg));
-			g.drawImage(mImg.getImage(), (int)this.minX, (int)this.minY, this);
+			g.drawImage(mImg.getImage(), (int) this.minX, (int) this.minY, this);
 
 			Graphics2D g2d = (Graphics2D) g;
 
@@ -104,10 +106,12 @@ public class MyImagePanel extends JPanel {
 			drawStaticEllipses(g2d);
 		}
 	}
-	private int getStaticEllipsesCount(){
+
+	private int getStaticEllipsesCount() {
 		ArrayList<Ellipse> es = mImg.getEllipseStatic();
-		return  es == null? 0 : es.size();
+		return es == null ? 0 : es.size();
 	}
+
 	public void drawStaticEllipses(Graphics2D g2d) {
 		AffineTransform old = g2d.getTransform();
 		// -----------------------------------------//
@@ -117,25 +121,21 @@ public class MyImagePanel extends JPanel {
 		int i = 0;
 		for (Ellipse e : staticEllipses) {
 			e = e.offset(minX, minY);
-			BasicStroke bs = UniversalTool.getPreferableStroke(Math.max(e.major, e.minor)*2);
+			BasicStroke bs = UniversalTool.getPreferableStroke(Math.max(e.major, e.minor) * 2);
 
-			
 			// do rotation
 			g2d.rotate(e.angle, e.x, e.y);
 			// draw elps
 
-			
 			Ellipse2D.Double ed = e.getErectedEllipse2D();
-			
-			
-			
+
 			g2d.setColor(Color.black);
 			g2d.setStroke(bs);
 			g2d.draw(ed);
-			
+
 			g2d.setColor(Color.yellow);
-			g2d.setStroke(new BasicStroke(bs.getLineWidth()/2));
-			
+			g2d.setStroke(new BasicStroke(bs.getLineWidth() / 2));
+
 			g2d.draw(ed);
 
 			// reset transform
@@ -210,8 +210,7 @@ public class MyImagePanel extends JPanel {
 
 		int i = 0;
 		for (Ellipse e : elpses) {
-			
-			
+
 			ArrayList<Point_> keyPoints = e.getKeyPoints();
 			BasicStroke bs = UniversalTool.getPreferableStroke(Math.max(e.major, e.minor));
 
@@ -225,7 +224,7 @@ public class MyImagePanel extends JPanel {
 			} else {
 				g2d.setColor(Color.GREEN);
 			}
-			
+
 			Ellipse2D.Double ed = e.getErectedEllipse2D();
 			g2d.draw(ed);
 
@@ -239,7 +238,7 @@ public class MyImagePanel extends JPanel {
 				g2d.setColor(Color.red);
 			}
 			for (Point_ p : keyPoints) {
-				
+
 				g2d.fill(UniversalTool.getPointOval(p, 2.2 * bs.getLineWidth()));
 			}
 			i++;
@@ -250,7 +249,7 @@ public class MyImagePanel extends JPanel {
 		ll = null;
 		waitLastPoint = false;
 		int unfinishedSize = unfinished.size();
-		if (unfinishedSize== 2) {
+		if (unfinishedSize == 2) {
 			waitLastPoint = true;
 			ll = new LinearLine(unfinished.get(0), unfinished.get(1));
 		}
@@ -258,14 +257,14 @@ public class MyImagePanel extends JPanel {
 			Ellipse e = new Ellipse(unfinished.get(0), unfinished.get(1), this.projPoint);
 			e.setOffsetForTableDisplay(this.minX, this.minY);
 			mImg.addElps(e);
-			Flags.numNewEllipse ++;
+			Flags.numNewEllipse++;
 			unfinished = new ArrayList<>();
 			this.activedEllipseIdx = mImg.getElpses().size() - 1;
-			
+
 		}
 		mainFrame.marksUpdatedAtSelectedImage(this.mImg);
-		if(unfinishedSize == 3){
-			mainFrame.coordListTH.rightPanelSetSelectedLine(this.activedEllipseIdx+getStaticEllipsesCount());
+		if (unfinishedSize == 3) {
+			mainFrame.coordListTH.rightPanelSetSelectedLine(this.activedEllipseIdx + getStaticEllipsesCount());
 		}
 		repaint();
 	}
@@ -277,13 +276,14 @@ public class MyImagePanel extends JPanel {
 	}
 
 	public void activateClosest(int x, int y) {
-		//if found that we still have jobs to be done OR no ellipse can be deleted --> abort
+		// if found that we still have jobs to be done OR no ellipse can be
+		// deleted --> abort
 		if (unfinished.size() != 0 || mImg.getElpses().size() == 0) {
 			return;
 		}
 		Point_ p = new Point_(x, y);
 		this.activedEllipseIdx = findTheClosestEllipse(p);
-		mainFrame.coordListTH.rightPanelSetSelectedLine(this.activedEllipseIdx+getStaticEllipsesCount());
+		mainFrame.coordListTH.rightPanelSetSelectedLine(this.activedEllipseIdx + getStaticEllipsesCount());
 		this.repaint();
 	}
 
@@ -293,7 +293,7 @@ public class MyImagePanel extends JPanel {
 			unfinished.remove(unfinished.size() - 1);
 
 		} else {
-			Flags.numNewEllipse --;
+			Flags.numNewEllipse--;
 			ArrayList<Ellipse> elpses = mImg.getElpses();
 			if (elpses.size() != 0 && this.activedEllipseIdx != -1) {
 				Ellipse e = elpses.remove(this.activedEllipseIdx);
@@ -319,6 +319,16 @@ public class MyImagePanel extends JPanel {
 			}
 		}
 		return minIdx;
+	}
+
+	public void setActivatedIndex(int rowIdx) {
+		rowIdx -= getStaticEllipsesCount();
+		if (rowIdx >= 0 && unfinished.size() == 0) {
+			activedEllipseIdx = rowIdx;
+			this.repaint();
+		}else{
+			activedEllipseIdx = -1;
+		}
 	}
 
 	public void reset() {

@@ -45,4 +45,7 @@ public class ClickHelper {
 		panel.activateClosest(globalX, globalY);
 		
 	}
+	public void clickOnRightTable(int rowIdx){
+		panel.setActivatedIndex(rowIdx);
+	}
 }
