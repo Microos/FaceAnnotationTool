@@ -1,6 +1,5 @@
 package hk.microos.tools;
 
-import java.util.ArrayList;
 
 import hk.microos.data.Point_;
 import hk.microos.frames.MyImagePanel;

@@ -8,11 +8,8 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.plaf.synth.SynthSpinnerUI;
-
 import hk.microos.data.Ellipse;
 import hk.microos.data.Flags;
 import hk.microos.data.LinearLine;
@@ -28,6 +25,7 @@ import hk.microos.tools.UniversalTool;
  *
  */
 
+@SuppressWarnings("serial")
 public class MyImagePanel extends JPanel {
 	private MyImage mImg = null;
 	MainFrame mainFrame = null;
@@ -49,7 +47,6 @@ public class MyImagePanel extends JPanel {
 	private int highlightedStaticEllipseIdx = -1;
 	public MyImagePanel(MainFrame mainFrame, JScrollPane fatherPanel) {
 		this.mainFrame = mainFrame;
-
 		this.fatherPanel = fatherPanel;
 	}
 
@@ -131,7 +128,7 @@ public class MyImagePanel extends JPanel {
 
 			Ellipse2D.Double ed = e.getErectedEllipse2D();
 			if(i == highlightedStaticEllipseIdx){
-				g2d.setColor(Color.red);
+				g2d.setColor(Color.CYAN);
 			}else{
 				g2d.setColor(Color.black);
 			}

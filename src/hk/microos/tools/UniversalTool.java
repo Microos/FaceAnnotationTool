@@ -3,15 +3,9 @@ package hk.microos.tools;
 import java.awt.BasicStroke;
 import java.awt.geom.Ellipse2D;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-
-import javax.naming.NoInitialContextException;
-
 import hk.microos.data.Ellipse;
 import hk.microos.data.Flags;
 import hk.microos.data.MyImage;

@@ -9,10 +9,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.print.attribute.standard.NumberOfDocuments;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.tools.ToolProvider;
 
 import hk.microos.data.Ellipse;
 import hk.microos.data.Flags;
@@ -50,12 +48,12 @@ public class IOTool {
 		return stringList;
 	}
 
-	public static HashMap filterImageList(ArrayList<String> list, JFrame dialogFatherFrame) {
+	public static HashMap<String, MyImage> filterImageList(ArrayList<String> list, JFrame dialogFatherFrame) {
 		HashMap<String, MyImage> map = new HashMap<>();
 		ArrayList<String> failed = new ArrayList<>();
 		int failedNum = 0;
 		for (String l : list) {
-			if(l.trim().equals("")){
+			if (l.trim().equals("")) {
 				continue;
 			}
 			if (!new File(l).exists()) {
@@ -119,25 +117,39 @@ public class IOTool {
 			prefix = "";
 
 			suffix = ".jpg";
+			
 		}
-
+		System.out.println("prefix: "+prefix);
+		System.out.println("suffix: "+suffix);
 		// parse annotation files
 		int at = 0;
 		while (at < lines.size()) {
 			String path = prefix + lines.get(at) + suffix;
 			at++;
+			int detNum = 0;
+			try {
+				detNum = Integer.parseInt(lines.get(at));
 
-			int detNum = Integer.parseInt(lines.get(at));
+			} catch (Exception e) {
+				throw new Exception(String.format("At line %d, failed to parse \"%s\" as number of annotations.\n", at,
+						lines.get(at)));
+				
+			}
 			at++;
+			
+			
+			ArrayList<Ellipse> elpses = null;
+			try {
+				elpses = readNEllipse(lines, at, detNum);
 
-			ArrayList<Ellipse> elpses = readNEllipse(lines, at, detNum);
+			} catch (Exception e) {
+				throw new Exception(e.getMessage());
+				
+			}
+			
 			at += detNum;
 
-			if (new File(path).exists()) {
-				map.put(path, elpses);
-			} else {
-				System.err.println(path + " listed in annotation files not found!");
-			}
+			map.put(path, elpses);
 
 		}
 
@@ -151,7 +163,7 @@ public class IOTool {
 			String line = lines.get(at);
 			String[] splitStr = line.split(" +");
 			if (splitStr.length < 5) {
-				throw new Exception(String.format("Line %d: contains less than 5 float values.", at));
+				throw new Exception(String.format("At line %d: \"%s\"\ncontains less than 5 float values.\nExpected annotation format: major,minor,angle,x,y", at,line));
 			}
 			ArrayList<Double> splitFlt = new ArrayList<>();
 			for (String s : splitStr) {

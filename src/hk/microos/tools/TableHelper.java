@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Set;
-
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -50,6 +49,7 @@ public class TableHelper {
 		}
 	}
 
+	@SuppressWarnings("serial")
 	public void fillRightTable(ArrayList<String> staticCoords, ArrayList<String> coords) {
 		clearAll();
 		// set red color as selected color

@@ -1,6 +1,5 @@
 package hk.microos.test;
 
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -8,7 +7,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -19,6 +17,7 @@ import hk.microos.data.Ellipse;
 import hk.microos.data.Point_;
 import hk.microos.tools.UniversalTool;
 
+@SuppressWarnings("serial")
 public class TestFrame extends JFrame {
 
 	private JPanel contentPane;
@@ -63,7 +62,6 @@ public class TestFrame extends JFrame {
             		
         			//save old transform
         			AffineTransform old = g2d.getTransform();
-        			AffineTransform trf = new AffineTransform();
         			for (Point_ p : e.getKeyPoints()){
         				g2d.fill(UniversalTool.getPointOval(p, 5));
         			}

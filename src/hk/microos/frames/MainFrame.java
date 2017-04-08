@@ -9,9 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-
 import hk.microos.data.Ellipse;
 import hk.microos.data.Flags;
 import hk.microos.data.MyImage;
@@ -20,28 +18,23 @@ import hk.microos.tools.IOTool;
 import hk.microos.tools.ImageTool;
 import hk.microos.tools.TableHelper;
 import hk.microos.tools.UniversalTool;
-
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListSelectionModel;
-
 import java.awt.Dimension;
 import java.awt.Color;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.nio.file.PathMatcher;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -69,13 +62,14 @@ public class MainFrame extends JFrame {
 	private JButton btnReadImageList;
 
 	private int leftTableSelectedRow = -1;
-	
+
 	private HashMap<String, MyImage> pathImgPair = null;
 	private HashMap<String, ArrayList<Ellipse>> pathStaticElpsesPair = null;
 	private JButton btnReadAnnotations;
 	private String annotContentPrefix = null;
 	private String annotContentSuffix = null;
 	private JButton btnOutputAnnotation;
+
 	/**
 	 * Launch the application.
 	 */
@@ -87,8 +81,8 @@ public class MainFrame extends JFrame {
 					MainFrame frame = new MainFrame();
 					// frame.recordedOpenPath =
 					// System.getProperty("user.home")+"/Desktop";
-//					 frame.recordedImgPath =
-//					 "/Users/microos/Downloads/originalPics/imgPath.txt";
+					// frame.recordedImgPath =
+					// "/Users/microos/Downloads/originalPics/imgPath.txt";
 
 					// frame.recordedAnnotPath = System.getProperty("user.home")
 					// + "/Desktop";
@@ -126,35 +120,30 @@ public class MainFrame extends JFrame {
 		JScrollPane rightScrollPanel = new JScrollPane();
 
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+		gl_contentPane.setHorizontalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPane
+				.createSequentialGroup()
+				.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addComponent(toolPanel, GroupLayout.DEFAULT_SIZE, 1174, Short.MAX_VALUE)
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addGap(3)
-							.addComponent(leftScrollPanel, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(scrollPanel, GroupLayout.PREFERRED_SIZE, 643, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(rightScrollPanel, GroupLayout.PREFERRED_SIZE, 286, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap())
-		);
-		gl_contentPane.setVerticalGroup(
-			gl_contentPane.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addComponent(toolPanel, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-								.addComponent(leftScrollPanel, GroupLayout.PREFERRED_SIZE, 516, GroupLayout.PREFERRED_SIZE)
-								.addComponent(scrollPanel, GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)))
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addGap(14)
-							.addComponent(rightScrollPanel, GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)))
-					.addContainerGap())
-		);
+						.addGroup(gl_contentPane.createSequentialGroup().addGap(3)
+								.addComponent(leftScrollPanel, GroupLayout.PREFERRED_SIZE, 230,
+										GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(scrollPanel, GroupLayout.PREFERRED_SIZE, 643, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED).addComponent(rightScrollPanel,
+										GroupLayout.PREFERRED_SIZE, 286, GroupLayout.PREFERRED_SIZE)))
+				.addContainerGap()));
+		gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING).addGroup(gl_contentPane
+				.createSequentialGroup()
+				.addComponent(toolPanel, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
+				.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_contentPane.createSequentialGroup().addPreferredGap(ComponentPlacement.RELATED)
+								.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+										.addComponent(leftScrollPanel, GroupLayout.PREFERRED_SIZE, 516,
+												GroupLayout.PREFERRED_SIZE)
+										.addComponent(scrollPanel, GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)))
+						.addGroup(gl_contentPane.createSequentialGroup().addGap(14).addComponent(rightScrollPanel,
+								GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)))
+				.addContainerGap()));
 
 		button = new JButton("TEST");
 		button.setVisible(false);
@@ -180,7 +169,7 @@ public class MainFrame extends JFrame {
 			}
 		});
 		toolPanel.add(btnReadAnnotations);
-		
+
 		btnOutputAnnotation = new JButton("Output Annotation");
 		btnOutputAnnotation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -249,23 +238,24 @@ public class MainFrame extends JFrame {
 			}
 		});
 	}
-	void rightTableOnClick(ListSelectionEvent e){
+
+	void rightTableOnClick(ListSelectionEvent e) {
 		if (e.getValueIsAdjusting())
 			return;
-		
+
 		int rowIdx = coordListTH.getSelectedRowIndex();
-		
+
 		cm.clickOnRightTable(rowIdx);
 	}
+
 	void leftTableOnClick(ListSelectionEvent e) {
 		if (e.getValueIsAdjusting())
 			return;
 		leftTableSelectedRow = imgListTH.getSelectedRowIndex();
 		if (leftTableSelectedRow == -1)
 			return;
-		int id = (int) imgListTH.getValueAt(leftTableSelectedRow, 0);
 		String path = imgListTH.getBehindRowDataAt(leftTableSelectedRow);
-		MyImage mim = UniversalTool.getMyImageFromPathImgPair(path,pathImgPair);
+		MyImage mim = UniversalTool.getMyImageFromPathImgPair(path, pathImgPair);
 		boolean changed = imagePanel.setCurrentImage(mim);
 		// display coords on the right
 		setRightPanelCoords(mim);
@@ -276,8 +266,8 @@ public class MainFrame extends JFrame {
 	}
 
 	void setRightPanelCoords(MyImage mim) {
-		//call this will update right panel with image's staticEllipse/Ellipse
-		//use null as the arg will use a selectedRow as target image
+		// call this will update right panel with image's staticEllipse/Ellipse
+		// use null as the arg will use a selectedRow as target image
 		if (mim == null) {
 			if (leftTableSelectedRow == -1) {
 				System.err.println("bad-0 at setRightPanelCoords");
@@ -289,9 +279,8 @@ public class MainFrame extends JFrame {
 				System.err.println("bad-1 at setRightPanelCoords");
 				return;
 			}
-			
-		}
 
+		}
 		// 1 load static ellipse into the table
 		// when pathElpsesPair set and
 		ArrayList<Ellipse> staticElps;
@@ -303,7 +292,7 @@ public class MainFrame extends JFrame {
 		// 2 load drawn ellipse into the table
 		coordListTH.fillRightTable(mim.getStaticElpsesStrings(), mim.getElpsesStrings());
 	}
-	
+
 	void updateImagePanelSize(MyImage mim) {
 		if (defaultScrollW == -1)
 			defaultScrollW = scrollPanel.getWidth();
@@ -340,7 +329,7 @@ public class MainFrame extends JFrame {
 				} else {
 
 					pathImgPair = IOTool.filterImageList(imgList, this);
-					if(pathImgPair.size() == 0){
+					if (pathImgPair.size() == 0) {
 						pathImgPair = null;
 						return;
 					}
@@ -362,20 +351,22 @@ public class MainFrame extends JFrame {
 	void testTable() {
 		System.out.println(imgListTH.getTable().hashCode() == imgNameTable.hashCode());
 	}
+
 	void loadAnnotList() {
 		if (pathImgPair == null) {
 			// no images loaded, abort
 			return;
 		}
-		if(annotContentPrefix == null){
-			String s = JOptionPane.showInputDialog(this, "Please set a prefix string for your annotation image path.\n(leave empty or cancel if not necessary)", "Prefix", JOptionPane.QUESTION_MESSAGE);
-			annotContentPrefix = s==null? "" : s;
-			
-			s = JOptionPane.showInputDialog(this, "Please set a suffix(usually is image format extention) for your annotation image path.\n(leave empty or cancel if not necessary)", "Suffix", JOptionPane.QUESTION_MESSAGE);
-			annotContentSuffix = s==null? "" : s;
-			
-			
-			
+		if (annotContentPrefix == null) {
+			String s = JOptionPane.showInputDialog(this,
+					"Please set a prefix string for your annotation image path.\n(leave empty or cancel if not necessary)",
+					"Prefix", JOptionPane.QUESTION_MESSAGE);
+			annotContentPrefix = s == null ? "" : s;
+
+			s = JOptionPane.showInputDialog(this,
+					"Please set a suffix(usually is image format extention) for your annotation image path.\n(leave empty or cancel if not necessary)",
+					"Suffix", JOptionPane.QUESTION_MESSAGE);
+			annotContentSuffix = s == null ? "" : s;
 		}
 		JFileChooser fc = new JFileChooser(recordedAnnotPath);
 		// fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -402,32 +393,87 @@ public class MainFrame extends JFrame {
 				}
 
 				if (noError == false) {
+					pathStaticElpsesPair = null;
 					annotContentPrefix = annotContentSuffix = null;
 					// parse failed
 					JOptionPane
 							.showMessageDialog(this,
-									String.format("Failed to parse the file: \"%s\"\n\n" + "Error:\n%s",
+									String.format("Failed to parse the file: \"%s\"\n\nError Info:\n%s",
 											f.getAbsolutePath(), errMessage),
 									"Parsing failed", JOptionPane.ERROR_MESSAGE);
+					return;
 				} else {
 					// // parse successes, reset
 					//
 					// // put these annotations to mImg.ellispe_static
+					int failedNum = 0;
+					int foundNum = 0;
+					ArrayList<String> failed = new ArrayList<>();
 					for (String p : pathImgPair.keySet()) {
 						ArrayList<Ellipse> elpses = pathStaticElpsesPair.get(p);
 						if (elpses != null) {// annotation list contains this
 												// image's annotations
 							MyImage mim = UniversalTool.getMyImageFromPathImgPair(p, pathImgPair);
 							mim.setElpsesStatic(elpses);
+							foundNum++;
 							// update mark nums
 						} else {
-							// System.err.println(String.format("%s not found in
-							// [pathElpsesPair], abort\n", p));
+							failedNum++;
+							if (failedNum < 10) {
+								failed.add(p);
+							}
+//							System.err.println(String.format("%s not found in " + "[pathElpsesPair], abort\n", p));
 						}
 					}
+					if (failedNum == pathImgPair.size()) {
+						// all failed
+						
+						
+						String m = "Did not found any matched images for the annotation file you selected.\n";
+						m += "Please check the paths in your annotation file.\n";
+						m += "To match an annotation with a loaded image,\n";
+						m += "make sure two paths are identical to each other.\n";
+						m += "Maybe a carefully-set prefix and suffix will help.";
+						String p = annotContentPrefix == null ? "" : annotContentPrefix;
+						String s = annotContentSuffix == null ? "" : annotContentSuffix;
+						
+						if (pathStaticElpsesPair != null && pathStaticElpsesPair.size() != 0) {
+							m += "\n\nCurrent path concatenated with prefix and sufix:\n";
+							m += String.format("Prefix = \"%s\"\n", p);
+							m += String.format("Suffix = \"%s\"\n", s);
+							m += ("Concatenated: "+pathStaticElpsesPair.keySet().iterator().next());
+						} else {
+							m += "\n\nYour current prefix and sufix:\n";
+							m += String.format("Prefix = \"%s\"\n", p);
+							m += String.format("Suffix = \"%s\"\n", s);
+						}
+
+						JOptionPane.showMessageDialog(this, m, "Not found any matched annotations",
+								JOptionPane.WARNING_MESSAGE);
+						annotContentPrefix = annotContentSuffix = null;
+						pathStaticElpsesPair = null;
+						return;
+					}
+					if(failedNum != 0){
+						String m = "Did not found any match annotations for the following loaded images:\n";
+						if(failed.size() < failedNum){
+							m += String.format("(%d listed, %d in total)\n", failed.size(), failedNum);
+						}else{
+							m += String.format("(num of images has no annotations: %d)\n", failed.size() );
+						}
+						int i = 1;
+						for (String fal : failed) {
+							m += String.format("%2d [%s]\n", i, fal);
+							i++;
+						}
+						JOptionPane.showMessageDialog(this, m, "Some images do not have annotations",
+								JOptionPane.WARNING_MESSAGE);
+					}
+
 					marksLoadAnnotationUpdate();
 					imagePanel.repaint();
 					freezeReadAnnotationBtn();
+					JOptionPane.showMessageDialog(this, String.format("Load annotations for %d images.", foundNum));
 					// // reset
 					// pathImgPair = null;
 					// leftTableSelectedRow = -1;
@@ -435,7 +481,7 @@ public class MainFrame extends JFrame {
 
 				}
 			}
-		}else{
+		} else {
 			annotContentPrefix = annotContentSuffix = null;
 		}
 	}
@@ -479,42 +525,47 @@ public class MainFrame extends JFrame {
 	}
 
 	public void marksUpdatedAtSelectedImage(MyImage mim) {
-		
+
 		if (leftTableSelectedRow == -1) {
 			System.err.println("marking on non-loaded image?");
 		}
 		imgListTH.setValueAt(leftTableSelectedRow, 2, mim.getMarkNumString());
 		setRightPanelCoords(mim);
 	}
-	public void freezeReadImageListBtn(){
+
+	public void freezeReadImageListBtn() {
 		this.btnReadImageList.setEnabled(false);
 	}
-	public void freezeReadAnnotationBtn(){
+
+	public void freezeReadAnnotationBtn() {
 		this.btnReadAnnotations.setEnabled(false);
 	}
-	public HashMap<String, MyImage> getPathImgPair(){
+
+	public HashMap<String, MyImage> getPathImgPair() {
 		return pathImgPair;
 	}
-	void outputAnnotations(){
-		if(pathImgPair == null){
-			return; //even no image loaded? abort
+
+	void outputAnnotations() {
+		if (pathImgPair == null) {
+			return; // even no image loaded? abort
 		}
-		if(Flags.numNewEllipse <= 0){
-			JOptionPane.showMessageDialog(this, "You did not mark any annotations, nothing to output.","Nothing to output",JOptionPane.WARNING_MESSAGE);
+		if (Flags.numNewEllipse <= 0) {
+			JOptionPane.showMessageDialog(this, "You did not mark any annotations, nothing to output.",
+					"Nothing to output", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		//open a chooser
-		//make it a .txt file
+		// open a chooser
+		// make it a .txt file
 		// ask: output only the new Ellipse or both new and static
-		
+
 		JFileChooser fc = new JFileChooser(recordedSavePath);
 		// fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		int res = fc.showOpenDialog(this);
 		if (res == JFileChooser.APPROVE_OPTION) {
 			File f = fc.getSelectedFile();
 			recordedImgPath = f.getParent();
-			IOTool.outputEllipse(pathImgPair, f.getAbsolutePath(),pathStaticElpsesPair != null,this);
-			
+			IOTool.outputEllipse(pathImgPair, f.getAbsolutePath(), pathStaticElpsesPair != null, this);
+
 		}
 	}
 }
