@@ -146,7 +146,10 @@ public class TableHelper {
 			return;
 		this.table.getSelectionModel().setSelectionInterval(row, row);
 	}
-
+	public void rightPanelSetSelectedLine(int finalIndex){
+		this.setSelectedRow(finalIndex);
+		
+	}
 	public int getRowIndexOfValue(String v) {
 		if (rowStringList == null)
 			return -1;

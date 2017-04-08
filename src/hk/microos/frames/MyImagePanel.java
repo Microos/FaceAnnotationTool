@@ -104,7 +104,10 @@ public class MyImagePanel extends JPanel {
 			drawStaticEllipses(g2d);
 		}
 	}
-
+	private int getStaticEllipsesCount(){
+		ArrayList<Ellipse> es = mImg.getEllipseStatic();
+		return  es == null? 0 : es.size();
+	}
 	public void drawStaticEllipses(Graphics2D g2d) {
 		AffineTransform old = g2d.getTransform();
 		// -----------------------------------------//
@@ -123,8 +126,6 @@ public class MyImagePanel extends JPanel {
 
 			
 			Ellipse2D.Double ed = e.getErectedEllipse2D();
-			
-			
 			
 			
 			
@@ -248,19 +249,24 @@ public class MyImagePanel extends JPanel {
 	public void updateStatus() {
 		ll = null;
 		waitLastPoint = false;
-		if (unfinished.size() == 2) {
+		int unfinishedSize = unfinished.size();
+		if (unfinishedSize== 2) {
 			waitLastPoint = true;
 			ll = new LinearLine(unfinished.get(0), unfinished.get(1));
 		}
-		if (unfinished.size() == 3) {
+		if (unfinishedSize == 3) {
 			Ellipse e = new Ellipse(unfinished.get(0), unfinished.get(1), this.projPoint);
 			e.setOffsetForTableDisplay(this.minX, this.minY);
 			mImg.addElps(e);
 			Flags.numNewEllipse ++;
 			unfinished = new ArrayList<>();
 			this.activedEllipseIdx = mImg.getElpses().size() - 1;
+			
 		}
-		mainFrame.marksUpdatedAtSelected(this.mImg);
+		mainFrame.marksUpdatedAtSelectedImage(this.mImg);
+		if(unfinishedSize == 3){
+			mainFrame.coordListTH.rightPanelSetSelectedLine(this.activedEllipseIdx+getStaticEllipsesCount());
+		}
 		repaint();
 	}
 
@@ -277,6 +283,7 @@ public class MyImagePanel extends JPanel {
 		}
 		Point_ p = new Point_(x, y);
 		this.activedEllipseIdx = findTheClosestEllipse(p);
+		mainFrame.coordListTH.rightPanelSetSelectedLine(this.activedEllipseIdx+getStaticEllipsesCount());
 		this.repaint();
 	}
 

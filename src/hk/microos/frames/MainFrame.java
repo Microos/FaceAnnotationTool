@@ -69,6 +69,7 @@ public class MainFrame extends JFrame {
 	private JButton btnReadImageList;
 
 	private int leftTableSelectedRow = -1;
+	
 	private HashMap<String, MyImage> pathImgPair = null;
 	private HashMap<String, ArrayList<Ellipse>> pathStaticElpsesPair = null;
 	private JButton btnReadAnnotations;
@@ -283,7 +284,7 @@ public class MainFrame extends JFrame {
 		// 2 load drawn ellipse into the table
 		coordListTH.fillRightTable(mim.getStaticElpsesStrings(), mim.getElpsesStrings());
 	}
-
+	
 	void updateImagePanelSize(MyImage mim) {
 		if (defaultScrollW == -1)
 			defaultScrollW = scrollPanel.getWidth();
@@ -341,7 +342,6 @@ public class MainFrame extends JFrame {
 	void testTable() {
 		System.out.println(imgListTH.getTable().hashCode() == imgNameTable.hashCode());
 	}
-
 	void loadAnnotList() {
 		if (pathImgPair == null) {
 			// no images loaded, abort
@@ -458,7 +458,7 @@ public class MainFrame extends JFrame {
 		setRightPanelCoords(null);
 	}
 
-	public void marksUpdatedAtSelected(MyImage mim) {
+	public void marksUpdatedAtSelectedImage(MyImage mim) {
 		
 		if (leftTableSelectedRow == -1) {
 			System.err.println("marking on non-loaded image?");
