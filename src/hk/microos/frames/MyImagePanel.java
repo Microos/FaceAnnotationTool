@@ -33,10 +33,10 @@ public class MyImagePanel extends JPanel {
 	MainFrame mainFrame = null;
 	JScrollPane fatherPanel = null;
 	private boolean inited = false;
-	public int minX;
-	public int minY;
-	public int maxX;
-	public int maxY;
+	public double minX;
+	public double minY;
+	public double maxX;
+	public double maxY;
 
 	// used in 2-point live draw
 	public boolean waitLastPoint = false;
@@ -73,15 +73,17 @@ public class MyImagePanel extends JPanel {
 		this.perpendicularConstrainY = y;
 		this.repaint();
 	}
-
+	private void setOffset(double[] offset){
+		this.minX = offset[0];
+		this.minY = offset[1];
+		this.maxX = offset[2];
+		this.maxY = offset[3];
+	}
 	public void paint(Graphics g) {
 		super.paint(g);
 		if (mImg != null) {
-			this.minX = (mImg.w() < MainFrame.defaultScrollW) ? (MainFrame.defaultScrollW - mImg.w()) / 2 : 0;
-			this.minY = (mImg.h() < MainFrame.defaultScrollH) ? (MainFrame.defaultScrollH - mImg.h()) / 2 : 0;
-			this.maxX = this.minX + mImg.w();
-			this.maxY = this.minY + mImg.h();
-			g.drawImage(mImg.getImage(), this.minX, this.minY, this);
+			setOffset(UniversalTool.getOffset(mImg));
+			g.drawImage(mImg.getImage(), (int)this.minX, (int)this.minY, this);
 
 			Graphics2D g2d = (Graphics2D) g;
 
@@ -207,8 +209,9 @@ public class MyImagePanel extends JPanel {
 
 		int i = 0;
 		for (Ellipse e : elpses) {
+			
+			
 			ArrayList<Point_> keyPoints = e.getKeyPoints();
-
 			BasicStroke bs = UniversalTool.getPreferableStroke(Math.max(e.major, e.minor));
 
 			g2d.setStroke(bs);
@@ -221,7 +224,7 @@ public class MyImagePanel extends JPanel {
 			} else {
 				g2d.setColor(Color.GREEN);
 			}
-
+			
 			Ellipse2D.Double ed = e.getErectedEllipse2D();
 			g2d.draw(ed);
 
@@ -235,6 +238,7 @@ public class MyImagePanel extends JPanel {
 				g2d.setColor(Color.red);
 			}
 			for (Point_ p : keyPoints) {
+				
 				g2d.fill(UniversalTool.getPointOval(p, 2.2 * bs.getLineWidth()));
 			}
 			i++;
@@ -249,7 +253,9 @@ public class MyImagePanel extends JPanel {
 			ll = new LinearLine(unfinished.get(0), unfinished.get(1));
 		}
 		if (unfinished.size() == 3) {
-			mImg.addElps(new Ellipse(unfinished.get(0), unfinished.get(1), this.projPoint));
+			Ellipse e = new Ellipse(unfinished.get(0), unfinished.get(1), this.projPoint);
+			e.setOffsetForTableDisplay(this.minX, this.minY);
+			mImg.addElps(e);
 			Flags.numNewEllipse ++;
 			unfinished = new ArrayList<>();
 			this.activedEllipseIdx = mImg.getElpses().size() - 1;

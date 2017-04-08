@@ -37,7 +37,7 @@ public class LinearLine {
 	public double calX(double Y){
 		return (Y-this.b)/this.k;
 	}
-	public Point_ projectOnLine(double x0, double y0, int minX, int minY, int maxX, int maxY){
+	public Point_ projectOnLine(double x0, double y0, double minX, double minY, double maxX, double maxY){
 		if(this.vertical){
 			return new Point_(this.b, y0);
 		}

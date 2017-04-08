@@ -7,7 +7,7 @@ public class Ellipse {
 	private ArrayList<Point_> keyPts = new ArrayList<>(); // 3 key points + 1
 															// center
 	public double major, minor, angle, x, y; // half mj mi
-
+	public double offsetX=0, offsetY=0;
 	public Ellipse(ArrayList<Double> v) {
 		this.major = v.get(0);
 		this.minor = v.get(1);
@@ -48,7 +48,10 @@ public class Ellipse {
 		keyPts.add(miC);
 		keyPts.add(new Point_(this.x, this.y));
 	}
-
+	public void setOffsetForTableDisplay(double ofx, double ofy){
+		this.offsetX = ofx;
+		this.offsetY = ofy;
+	}
 	public ArrayList<Point_> getKeyPoints() {
 		return keyPts;
 	}
@@ -85,10 +88,15 @@ public class Ellipse {
 		strs[0] = String.format(fmt, this.major);
 		strs[1] = String.format(fmt, this.minor);
 		strs[2] = String.format(fmt, this.angle);
-		strs[3] = String.format(fmt, this.x);
-		strs[4] = String.format(fmt, this.y);
+		strs[3] = String.format(fmt, this.x-offsetX);
+		strs[4] = String.format(fmt, this.y-offsetY);
 
 		return String.join(",", strs);
+	}
+	public String toOutputFormatString(){
+		//major minor angle x y  1
+		String fmt = "%.6f %.6f %.6f %.6f %.6f  1";
+		return String.format(fmt,this.major, this.minor, this.angle, this.x, this.y);
 	}
 
 }

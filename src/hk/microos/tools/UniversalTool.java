@@ -7,17 +7,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.naming.NoInitialContextException;
 
 import hk.microos.data.Ellipse;
 import hk.microos.data.Flags;
+import hk.microos.data.MyImage;
 import hk.microos.data.Point_;
+import hk.microos.frames.MainFrame;
 
 public class UniversalTool {
 	private UniversalTool(){}
-	public static boolean inBound(int minX, int minY, int maxX, int maxY, int x, int y) {
+	public static boolean inBound(double minX, double minY, double maxX, double maxY, int x, int y) {
 		// System.out.format("inBound: %d %d %d %d\tXY: %d %d\n",
 		// minX,minY,maxX,maxY,x,y);
 		return (minX <= x && x <= maxX) && (minY <= y && y <= maxY);
@@ -60,7 +63,8 @@ public class UniversalTool {
 		double B2 = (a.y - b.y)*(a.y - b.y);
 		return Math.sqrt(A2+B2);
 	}
-	public static boolean inBound(Point_ p, int minX, int minY, int maxX, int maxY){
+	
+	public static boolean inBound(Point_ p, double minX, double minY, double maxX, double maxY){
 		double x = p.x;
 		double y = p.y;
 		if( (x>=minX && x<=maxX) && (y>=minY && y<maxY)){
@@ -118,8 +122,24 @@ public class UniversalTool {
 		ret[0] = pref;
 		ret[1] = name;
 		return ret;
-		
-		
 	}
-	
+	public static double[] getOffset(MyImage mImg){
+		double[] ret = new double[4];
+		ret[0] = (mImg.w() < MainFrame.defaultScrollW) ? (MainFrame.defaultScrollW - mImg.w()) / 2 : 0;
+		ret[1] = (mImg.h() < MainFrame.defaultScrollH) ? (MainFrame.defaultScrollH - mImg.h()) / 2 : 0;
+		ret[2] = ret[0] + mImg.w();
+		ret[3] = ret[1] + mImg.h();
+		return ret;
+	} 
+	public static MyImage getMyImageFromPathImgPair(String path, HashMap<String, MyImage> pathImgPair) {
+		MyImage img = pathImgPair.get(path);
+		if (img == null) {
+			File f = new File(path);
+			img = new MyImage(f);
+			pathImgPair.put(path, img);
+			return img;
+		} else {
+			return img;
+		}
+	}
 }

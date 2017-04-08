@@ -9,4 +9,4 @@
 - [x]  load imglist -> disable load img button
 - [x]  one click after load -> disable load annotation button
 - [x]  load annotation -> disable load annotatino button
-- [ ]  output file function 
+- [x]  output file function 

@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import hk.microos.tools.ImageTool;
+import hk.microos.tools.UniversalTool;
 
 public class MyImage {
 	private String path;
@@ -38,8 +39,8 @@ public class MyImage {
 	}
 
 	public BufferedImage getImage() {
-
-		return bi == null ? ImageTool.openImage(new File(path)) : bi;
+		bi =  bi == null ? ImageTool.openImage(new File(path)) : bi;
+		return bi;
 	}
 
 	public void addElps(Ellipse e) {
@@ -86,7 +87,33 @@ public class MyImage {
 
 		return strs;
 	}
-
+	public String getOutputString(boolean withBoth){
+		//imgPath
+		//detNum
+		//coord1 1
+		//coord2 1
+		//...
+		
+		ArrayList<Ellipse> elpse4Output = new ArrayList<>();
+		if(withBoth && elpsesStatic!=null){
+			elpse4Output.addAll(elpsesStatic);
+		}
+		elpse4Output.addAll(elpses);
+		if(elpse4Output.size() == 0) return "";
+		StringBuilder sb = new StringBuilder();
+		sb.append(path+"\n");
+		sb.append(elpse4Output.size()+"\n");
+		double[] offset = UniversalTool.getOffset(this);
+		for(Ellipse e : elpse4Output){
+			e = e.offset(-offset[0], -offset[1]);
+			sb.append(e.toOutputFormatString()+"\n");
+		}
+		return sb.toString();
+		
+		
+		
+		
+	}
 	public String getPath() {
 		return this.path;
 	}

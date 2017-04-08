@@ -9,8 +9,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.print.attribute.standard.NumberOfDocuments;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.tools.ToolProvider;
 
 import hk.microos.data.Ellipse;
 import hk.microos.data.Flags;
@@ -53,6 +55,7 @@ public class IOTool {
 		ArrayList<String> failed = new ArrayList<>();
 		for (String l : list) {
 			if (!new File(l).exists()) {
+				
 				failed.add(l);
 				continue;
 			}
@@ -66,8 +69,8 @@ public class IOTool {
 		}
 		return map;
 	}
-	private static void writeFile(String txtPath, String content) {
-		File f = new File(txtPath);
+
+	private static void writeFile(File f, String content) {
 		FileWriter fw;
 		try {
 			if (!f.exists())
@@ -81,18 +84,19 @@ public class IOTool {
 			e.printStackTrace();
 		}
 	}
-	public static HashMap<String, ArrayList<Ellipse>> readAnnotationFile(File f, String prefix, String suffix) throws Exception {
+
+	public static HashMap<String, ArrayList<Ellipse>> readAnnotationFile(File f, String prefix, String suffix)
+			throws Exception {
 		HashMap<String, ArrayList<Ellipse>> map = new HashMap<>();
 		ArrayList<String> lines = readText(f);
-		
-		if(Flags.GLOABAL_DEBUG){
-			prefix = "/Users/microos/Downloads/originalPics/";
+
+		if (Flags.GLOABAL_DEBUG) {
+			// prefix = "/Users/microos/Downloads/originalPics/";
 			// prefix = "/home/rick/Space/work/FDDB/data/images/";
-			// prefix = "";
-			
+			prefix = "";
+
 			suffix = ".jpg";
 		}
-		
 
 		// parse annotation files
 		int at = 0;
@@ -133,5 +137,45 @@ public class IOTool {
 			elps.add(new Ellipse(splitFlt));
 		}
 		return elps;
+	}
+
+	public static void outputEllipse(HashMap<String, MyImage> pathImgPair, String outPath, boolean hasAnnotationLoaded,
+			JFrame dialogFatherFrame) {
+		outPath = !outPath.endsWith(".txt") ? outPath += ".txt" : outPath;
+		System.out.println("OP: " + outPath);
+		File f = new File(outPath);
+		if (f.exists()) {
+			int res = JOptionPane.showConfirmDialog(dialogFatherFrame,
+					String.format("File %s exists, do you want to overwrite it?", f.getAbsolutePath()), "File exists",
+					JOptionPane.YES_NO_OPTION);
+			if (res == JOptionPane.NO_OPTION)
+				return;
+		}
+		boolean withBoth = false;
+		if (hasAnnotationLoaded) {
+			int res = JOptionPane.showOptionDialog(dialogFatherFrame,
+					"Do you want to concatenate loaded annotations and annotations marked by you into the output?\n"
+							+ "(Noted that a image without any annotation will not be included in the output file)",
+					"", JOptionPane.NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
+					new String[] { "both loaded and marked annotations", "only annotations marked by me" }, 0);
+			if (res == 0)
+				withBoth = true;
+			if (res == 1)
+				withBoth = false;
+		}
+		int numImage = 0;
+		int numAnnot = 0;
+		StringBuffer sb = new StringBuffer();
+		for (String p : pathImgPair.keySet()) {
+			MyImage mim = UniversalTool.getMyImageFromPathImgPair(p, pathImgPair);
+			String s = mim.getOutputString(withBoth);
+			sb.append(s);
+			if(!s.equals("")){
+				 numImage ++;
+				 numAnnot+= s.split("\n").length-2;
+			}
+		}
+		writeFile(f, sb.toString());
+		JOptionPane.showMessageDialog(dialogFatherFrame, String.format("%d annotations from %d images \nhave been written to %s", numAnnot,numImage, f.getAbsolutePath()));
 	}
 }
