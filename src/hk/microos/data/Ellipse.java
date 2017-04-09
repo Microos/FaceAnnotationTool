@@ -48,7 +48,8 @@ public class Ellipse {
 		keyPts.add(miC);
 		keyPts.add(new Point_(this.x, this.y));
 	}
-	public void setOffsetForTableDisplay(double ofx, double ofy){
+	public void setOffsetForTableDisplayAndOutput(double ofx, double ofy){
+		//only new added ellipse will need this
 		this.offsetX = ofx;
 		this.offsetY = ofy;
 	}
@@ -96,7 +97,7 @@ public class Ellipse {
 	public String toOutputFormatString(){
 		//major minor angle x y  1
 		String fmt = "%.6f %.6f %.6f %.6f %.6f  1";
-		return String.format(fmt,this.major, this.minor, this.angle, this.x, this.y);
+		return String.format(fmt,this.major, this.minor, this.angle, this.x-offsetX, this.y-offsetY);
 	}
 
 }

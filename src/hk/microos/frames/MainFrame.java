@@ -37,6 +37,8 @@ import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class MainFrame extends JFrame {
 
@@ -55,10 +57,10 @@ public class MainFrame extends JFrame {
 	private JTable coordTable;
 	public TableHelper imgListTH;
 	public TableHelper coordListTH;
-	private String recordedImgPath = "/home/rick/Space/work/FDDB/data/Annotations";
+	private String recordedImgPath = "";
 
-	private String recordedAnnotPath = "/home/rick/Space/work/FDDB/data/Annotations";
-	private String recordedSavePath = "/home/rick/Space/work/FDDB/data/Annotations";
+	private String recordedAnnotPath = "";
+	private String recordedSavePath = "";
 	private JButton btnReadImageList;
 
 	private int leftTableSelectedRow = -1;
@@ -79,15 +81,16 @@ public class MainFrame extends JFrame {
 			public void run() {
 				try {
 					MainFrame frame = new MainFrame();
-					// frame.recordedOpenPath =
-					// System.getProperty("user.home")+"/Desktop";
-					// frame.recordedImgPath =
-					// "/Users/microos/Downloads/originalPics/imgPath.txt";
+					frame.recordedImgPath = System.getProperty("user.home")+"/Desktop";
+//					 frame.recordedImgPath =
+//					 "/Users/microos/Downloads/originalPics/imgPath.txt";
 
-					// frame.recordedAnnotPath = System.getProperty("user.home")
-					// + "/Desktop";
+					frame.recordedAnnotPath = System.getProperty("user.home") + "/Desktop";
 					// frame.recordedAnnotPath =
 					// "/Users/microos/Downloads/FDDB-folds/FDDB-fold-05-ellipseList.txt";
+					
+					frame.recordedSavePath = System.getProperty("user.home") + "/Desktop";
+					
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -101,9 +104,22 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if(Flags.numNewEllipse != 0){
+					int op = JOptionPane.showConfirmDialog(MainFrame.this, "Do you want to exit?", "Exiting", JOptionPane.YES_NO_OPTION);
+					if(op == JOptionPane.YES_OPTION){
+						System.exit(0);
+					}
+				}else{
+					System.exit(0);
+				}
+			}
+		});
 		setResizable(false);
 		setTitle("Face Annotation Tool");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 1195, 601);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -308,7 +324,6 @@ public class MainFrame extends JFrame {
 
 	void loadImageList() {
 		JFileChooser fc = new JFileChooser(recordedImgPath);
-		// fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		int res = fc.showOpenDialog(this);
 		if (res == JFileChooser.APPROVE_OPTION) {
 			File f = fc.getSelectedFile();
@@ -369,7 +384,6 @@ public class MainFrame extends JFrame {
 			annotContentSuffix = s == null ? "" : s;
 		}
 		JFileChooser fc = new JFileChooser(recordedAnnotPath);
-		// fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		int res = fc.showOpenDialog(this);
 		if (res == JFileChooser.APPROVE_OPTION) {
 			File f = fc.getSelectedFile();
@@ -429,37 +443,37 @@ public class MainFrame extends JFrame {
 						// all failed
 						
 						
-						String m = "Did not found any matched images for the annotation file you selected.\n";
+						String m = "Did not find any matching images for the annotation file you selected.\n";
 						m += "Please check the paths in your annotation file.\n";
 						m += "To match an annotation with a loaded image,\n";
-						m += "make sure two paths are identical to each other.\n";
-						m += "Maybe a carefully-set prefix and suffix will help.";
+						m += " make sure two paths are identical to each other.\n";
+						m += "Maybe a carefully-set prefix and suffix will help.\n\n";
 						String p = annotContentPrefix == null ? "" : annotContentPrefix;
 						String s = annotContentSuffix == null ? "" : annotContentSuffix;
 						
 						if (pathStaticElpsesPair != null && pathStaticElpsesPair.size() != 0) {
-							m += "\n\nCurrent path concatenated with prefix and sufix:\n";
+							m += "Current path concatenated with prefix and sufix:\n";
 							m += String.format("Prefix = \"%s\"\n", p);
 							m += String.format("Suffix = \"%s\"\n", s);
 							m += ("Concatenated: "+pathStaticElpsesPair.keySet().iterator().next());
 						} else {
-							m += "\n\nYour current prefix and sufix:\n";
+							m += "Your current prefix and suffix:\n";
 							m += String.format("Prefix = \"%s\"\n", p);
 							m += String.format("Suffix = \"%s\"\n", s);
 						}
 
-						JOptionPane.showMessageDialog(this, m, "Not found any matched annotations",
+						JOptionPane.showMessageDialog(this, m, "No matching annotations found",
 								JOptionPane.WARNING_MESSAGE);
 						annotContentPrefix = annotContentSuffix = null;
 						pathStaticElpsesPair = null;
 						return;
 					}
 					if(failedNum != 0){
-						String m = "Did not found any match annotations for the following loaded images:\n";
+						String m = "Did not find any matching annotations for the following loaded images:\n";
 						if(failed.size() < failedNum){
 							m += String.format("(%d listed, %d in total)\n", failed.size(), failedNum);
 						}else{
-							m += String.format("(num of images has no annotations: %d)\n", failed.size() );
+							m += String.format("(num of images: %d)\n", failed.size() );
 						}
 						int i = 1;
 						for (String fal : failed) {
@@ -474,10 +488,6 @@ public class MainFrame extends JFrame {
 					imagePanel.repaint();
 					freezeReadAnnotationBtn();
 					JOptionPane.showMessageDialog(this, String.format("Load annotations for %d images.", foundNum));
-					// // reset
-					// pathImgPair = null;
-					// leftTableSelectedRow = -1;
-					// imagePanel.reset();
 
 				}
 			}
@@ -492,8 +502,6 @@ public class MainFrame extends JFrame {
 		Dimension d = new Dimension(w, h);
 		imagePanel.setSize(d);
 		imagePanel.setPreferredSize(d);
-		// imagePanel.setMaximumSize(d);
-		// imagePanel.setMinimumSize(d);
 	}
 
 	void testSetBackgroundImage() {
@@ -559,7 +567,6 @@ public class MainFrame extends JFrame {
 		// ask: output only the new Ellipse or both new and static
 
 		JFileChooser fc = new JFileChooser(recordedSavePath);
-		// fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		int res = fc.showOpenDialog(this);
 		if (res == JFileChooser.APPROVE_OPTION) {
 			File f = fc.getSelectedFile();

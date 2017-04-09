@@ -262,7 +262,7 @@ public class MyImagePanel extends JPanel {
 		int idx = -1;
 		if (unfinishedSize == 3) {
 			Ellipse e = new Ellipse(unfinished.get(0), unfinished.get(1), this.projPoint);
-			e.setOffsetForTableDisplay(this.minX, this.minY);
+			e.setOffsetForTableDisplayAndOutput(this.minX, this.minY);
 			mImg.addElps(e);
 			Flags.numNewEllipse++;
 			unfinished = new ArrayList<>();

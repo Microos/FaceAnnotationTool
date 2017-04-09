@@ -105,7 +105,6 @@ public class MyImage {
 		sb.append(elpse4Output.size()+"\n");
 		double[] offset = UniversalTool.getOffset(this);
 		for(Ellipse e : elpse4Output){
-			e = e.offset(-offset[0], -offset[1]);
 			sb.append(e.toOutputFormatString()+"\n");
 		}
 		return sb.toString();

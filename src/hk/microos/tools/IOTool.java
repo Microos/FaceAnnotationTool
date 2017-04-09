@@ -140,7 +140,7 @@ public class IOTool {
 			
 			ArrayList<Ellipse> elpses = null;
 			try {
-				elpses = readNEllipse(lines, at, detNum);
+				elpses = readEllipse(lines, at, detNum);
 
 			} catch (Exception e) {
 				throw new Exception(e.getMessage());
@@ -156,7 +156,7 @@ public class IOTool {
 		return map;
 	}
 
-	private static ArrayList<Ellipse> readNEllipse(ArrayList<String> lines, int start, int num) throws Exception {
+	private static ArrayList<Ellipse> readEllipse(ArrayList<String> lines, int start, int num) throws Exception {
 		ArrayList<Ellipse> elps = new ArrayList<>();
 		for (int i = 0; i < num; i++) {
 			int at = start + i;
@@ -183,7 +183,7 @@ public class IOTool {
 			int res = JOptionPane.showConfirmDialog(dialogFatherFrame,
 					String.format("File %s exists, do you want to overwrite it?", f.getAbsolutePath()), "File exists",
 					JOptionPane.YES_NO_OPTION);
-			if (res == JOptionPane.NO_OPTION)
+			if (res == JOptionPane.NO_OPTION || res == -1)
 				return;
 		}
 		boolean withBoth = false;
@@ -193,6 +193,8 @@ public class IOTool {
 							+ "(Noted that a image without any annotation will not be included in the output file)",
 					"", JOptionPane.NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
 					new String[] { "both loaded and marked annotations", "only annotations marked by me" }, 0);
+			if(res == -1)
+				return;
 			if (res == 0)
 				withBoth = true;
 			if (res == 1)
@@ -201,6 +203,7 @@ public class IOTool {
 		int numImage = 0;
 		int numAnnot = 0;
 		StringBuffer sb = new StringBuffer();
+		
 		for (String p : pathImgPair.keySet()) {
 			MyImage mim = UniversalTool.getMyImageFromPathImgPair(p, pathImgPair);
 			String s = mim.getOutputString(withBoth);
