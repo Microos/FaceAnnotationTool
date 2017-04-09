@@ -57,10 +57,13 @@ public class MainFrame extends JFrame {
 	private JTable coordTable;
 	public TableHelper imgListTH;
 	public TableHelper coordListTH;
-	private String recordedImgPath = "";
-
-	private String recordedAnnotPath = "";
-	private String recordedSavePath = "";
+	
+	private String recordedPath = "";
+//	private String recordedImgPath = "";
+//	private String recordedAnnotPath = "";
+//	private String recordedSavePath = "";
+	
+	
 	private JButton btnReadImageList;
 
 	private int leftTableSelectedRow = -1;
@@ -81,15 +84,16 @@ public class MainFrame extends JFrame {
 			public void run() {
 				try {
 					MainFrame frame = new MainFrame();
-					frame.recordedImgPath = System.getProperty("user.home")+"/Desktop";
-//					 frame.recordedImgPath =
-//					 "/Users/microos/Downloads/originalPics/imgPath.txt";
-
-					frame.recordedAnnotPath = System.getProperty("user.home") + "/Desktop";
-					// frame.recordedAnnotPath =
-					// "/Users/microos/Downloads/FDDB-folds/FDDB-fold-05-ellipseList.txt";
-					
-					frame.recordedSavePath = System.getProperty("user.home") + "/Desktop";
+					frame.recordedPath = System.getProperty("user.home")+"/Desktop";
+//					frame.recordedImgPath = System.getProperty("user.home")+"/Desktop";
+////					 frame.recordedImgPath =
+////					 "/Users/microos/Downloads/originalPics/imgPath.txt";
+//
+//					frame.recordedAnnotPath = System.getProperty("user.home") + "/Desktop";
+//					// frame.recordedAnnotPath =
+//					// "/Users/microos/Downloads/FDDB-folds/FDDB-fold-05-ellipseList.txt";
+//					
+//					frame.recordedSavePath = System.getProperty("user.home") + "/Desktop";
 					
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -323,11 +327,11 @@ public class MainFrame extends JFrame {
 	}
 
 	void loadImageList() {
-		JFileChooser fc = new JFileChooser(recordedImgPath);
+		JFileChooser fc = new JFileChooser(recordedPath);
 		int res = fc.showOpenDialog(this);
 		if (res == JFileChooser.APPROVE_OPTION) {
 			File f = fc.getSelectedFile();
-			recordedImgPath = f.getParent();
+			recordedPath = f.getParent();
 			if (!IOTool.isTextFile(f)) {
 				// not a readable text file
 				JOptionPane.showMessageDialog(this,
@@ -383,11 +387,11 @@ public class MainFrame extends JFrame {
 					"Suffix", JOptionPane.QUESTION_MESSAGE);
 			annotContentSuffix = s == null ? "" : s;
 		}
-		JFileChooser fc = new JFileChooser(recordedAnnotPath);
+		JFileChooser fc = new JFileChooser(recordedPath);
 		int res = fc.showOpenDialog(this);
 		if (res == JFileChooser.APPROVE_OPTION) {
 			File f = fc.getSelectedFile();
-			recordedAnnotPath = f.getParent();
+			recordedPath = f.getParent();
 			if (!IOTool.isTextFile(f)) {
 				// not a readable text file
 				JOptionPane.showMessageDialog(this,
@@ -566,11 +570,11 @@ public class MainFrame extends JFrame {
 		// make it a .txt file
 		// ask: output only the new Ellipse or both new and static
 
-		JFileChooser fc = new JFileChooser(recordedSavePath);
+		JFileChooser fc = new JFileChooser(recordedPath);
 		int res = fc.showOpenDialog(this);
 		if (res == JFileChooser.APPROVE_OPTION) {
 			File f = fc.getSelectedFile();
-			recordedImgPath = f.getParent();
+			recordedPath = f.getParent();
 			IOTool.outputEllipse(pathImgPair, f.getAbsolutePath(), pathStaticElpsesPair != null, this);
 
 		}
