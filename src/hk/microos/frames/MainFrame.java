@@ -170,7 +170,7 @@ public class MainFrame extends JFrame {
 		});
 		toolPanel.add(button);
 
-		btnReadImageList = new JButton("Read Image List");
+		btnReadImageList = new JButton("1 Read Image List");
 		btnReadImageList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				loadImageList();
@@ -178,7 +178,7 @@ public class MainFrame extends JFrame {
 		});
 		toolPanel.add(btnReadImageList);
 
-		btnReadAnnotations = new JButton("Read Annotations");
+		btnReadAnnotations = new JButton("2 Read Annotations");
 		btnReadAnnotations.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				loadAnnotList();
@@ -186,7 +186,7 @@ public class MainFrame extends JFrame {
 		});
 		toolPanel.add(btnReadAnnotations);
 
-		btnOutputAnnotation = new JButton("Output Annotation");
+		btnOutputAnnotation = new JButton("3 Output Annotation");
 		btnOutputAnnotation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				outputAnnotations();

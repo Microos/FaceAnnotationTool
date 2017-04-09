@@ -25,7 +25,7 @@ public class TestFrame extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main_(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {

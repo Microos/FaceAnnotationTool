@@ -5,7 +5,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 import hk.microos.tools.ImageTool;
-import hk.microos.tools.UniversalTool;
 
 public class MyImage {
 	private String path;
@@ -103,7 +102,6 @@ public class MyImage {
 		StringBuilder sb = new StringBuilder();
 		sb.append(path+"\n");
 		sb.append(elpse4Output.size()+"\n");
-		double[] offset = UniversalTool.getOffset(this);
 		for(Ellipse e : elpse4Output){
 			sb.append(e.toOutputFormatString()+"\n");
 		}
