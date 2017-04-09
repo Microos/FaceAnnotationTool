@@ -18,7 +18,7 @@ Choose a txt file has the following format:
 ```
 
 Here, each face is denoted by:\
-`<major_axis_radius minor_axis_radius angle center_x center_y 1>`.
+`<major_axis_radius minor_axis_radius angle center_x center_y 1>`.\
 (The 1 in the last of each face canbe any value since it won't be read.)
 
 The image names have to be identical to the absolute paths of images you loaded.\
