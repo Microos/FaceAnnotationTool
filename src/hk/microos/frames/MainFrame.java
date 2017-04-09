@@ -59,9 +59,6 @@ public class MainFrame extends JFrame {
 	public TableHelper coordListTH;
 	
 	private String recordedPath = "";
-//	private String recordedImgPath = "";
-//	private String recordedAnnotPath = "";
-//	private String recordedSavePath = "";
 	
 	
 	private JButton btnReadImageList;
