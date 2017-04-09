@@ -1,5 +1,10 @@
 # FaceAnnotationTool
 
+### Testing with FDDB images:
+	get fddb images and annotations by executing `download_fddb.sh`
+
+
+
 ### TODO:
 - [x]  basic functions
 - [x]  ask for prefix and suffix when load imglist
@@ -10,3 +15,4 @@
 - [x]  one click after load -> disable load annotation button
 - [x]  load annotation -> disable load annotation button
 - [x]  output file function 
+
