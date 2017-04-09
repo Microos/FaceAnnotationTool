@@ -7,6 +7,7 @@ Choose a txt file contains absolute paths of images
 #### 2. Load Image Annotations (Optional)
 Choose a txt file has the following format:
 
+```
 ...\
 &lt;image name i&gt;\
 &lt;number of faces in this image =im&gt;\
@@ -15,18 +16,19 @@ Choose a txt file has the following format:
 ...\
 &lt;face im&gt;\
 ...
+```
 
 Here, each face is denoted by:\
-&lt;major_axis_radius minor_axis_radius angle center_x center_y 1&gt;.
+`&lt;major_axis_radius minor_axis_radius angle center_x center_y 1&gt;`.
 
 The image names have to be identical to the absolute paths of images you loaded.\
 Or you can have relative paths in the annotation file but with prefix and suffix\
 set up in prompts.
 
 #### 3. Mark Faces
-1. Left click to add a key point. Three key points to form an ellipse mark.
-2. Shift + Mouse Move to activate a new marked ellipse.
-3. Right click to cancel a key point of an activated ellipse or an unfinished 
+1. *Left click* to add a key point. Three key points to form an ellipse mark.
+2. *Shift + Mouse* Move to activate a new marked ellipse.
+3. *Right click* to cancel a key point of an activated ellipse or an unfinished 
 key point.
 4. Click the coordinates on the right table to highlight the corresponding ellipse.
 
