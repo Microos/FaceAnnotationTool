@@ -39,7 +39,8 @@ Output your work to a txt file with an identical format of input annotation file
 Get fddb images and annotations by executing `download_fddb.sh`
 
 ### Demo:
-1. **Left click** to add key points.
+
+1. **Left click** to add key points.\
 ![](https://media.giphy.com/media/xUA7aQzq4XxTaACFX2/giphy.gif)
 
 2. Click a coordinate on the right table to highlight an ellipse.
