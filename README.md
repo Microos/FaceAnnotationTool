@@ -51,7 +51,7 @@ Get fddb images and annotations by executing `download_fddb.sh`
 4. **Right click** to cancel a key point of an activated ellipse or an unfinished 
 key point.
 ![](https://media.giphy.com/media/3ohzdJAZ7prWnFk8QU/giphy.gif)
-
+ 
 ### TODO:
 - [x]  basic functions
 - [x]  ask for prefix and suffix when load imglist
