@@ -1,6 +1,6 @@
 '''
-By placing a "fold-??-out.txt" files under "./fddb/out-fold" directory, this
-script will convert rectangle output into ellipse output.
+By placing "fold-??-out.txt" files under "./fddb/out-fold" directory, this
+script will be able to convert rectangle output into ellipse output.
 Then these converted output can be used as annotations inspected in
 our F.A.T..
 '''
