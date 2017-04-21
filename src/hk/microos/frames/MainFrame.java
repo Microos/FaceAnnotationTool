@@ -82,23 +82,12 @@ public class MainFrame extends JFrame {
 				try {
 					MainFrame frame = new MainFrame();
 					frame.recordedPath = System.getProperty("user.home")+"/Desktop";
-//					frame.recordedImgPath = System.getProperty("user.home")+"/Desktop";
-////					 frame.recordedImgPath =
-////					 "/Users/microos/Downloads/originalPics/imgPath.txt";
-//
-//					frame.recordedAnnotPath = System.getProperty("user.home") + "/Desktop";
-//					// frame.recordedAnnotPath =
-//					// "/Users/microos/Downloads/FDDB-folds/FDDB-fold-05-ellipseList.txt";
-//					
-//					frame.recordedSavePath = System.getProperty("user.home") + "/Desktop";
-					
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
-
 	}
 
 	/**

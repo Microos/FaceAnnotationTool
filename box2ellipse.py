@@ -9,9 +9,9 @@ import numpy as np
 
 erect_angle =  -90 * np.pi / 180
 
-this_dir = os.path.dirname(__file__)
-assert os.path.exists(this_dir+"/fddb/out-fold"), "fddb output folder 'out-fold' not found"
-os.chdir(this_dir+'/fddb')
+
+assert os.path.exists("fddb/out-fold"), "fddb output folder 'out-fold' not found"
+os.chdir('fddb')
 prefix = os.getcwd()
 suffix = ".jpg"
 x=os.popen("pwd | sed 's/ /\\ /g'").read().strip()
