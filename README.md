@@ -66,4 +66,4 @@ key point.
 - [x]  one click after load -> disable load annotation button
 - [x]  load annotation -> disable load annotation button
 - [x]  output file function 
-- [ ]  switch to another image -> clear the unfinished key point stack.
+- [x]  switch to another image -> clear the unfinished key point stack.

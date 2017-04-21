@@ -63,6 +63,7 @@ public class MyImagePanel extends JPanel {
 		this.inited = true;
 		activedEllipseIdx = -1;
 		highlightedStaticEllipseIdx = -1;
+		unfinished = new ArrayList<>();
 		this.repaint();
 		return true;
 	}
@@ -304,10 +305,10 @@ public class MyImagePanel extends JPanel {
 			unfinished.remove(unfinished.size() - 1);
 
 		} else {
-			Flags.numNewEllipse--;
+			
 			ArrayList<Ellipse> elpses = mImg.getElpses();
 			if (elpses.size() != 0 && this.activedEllipseIdx != -1) {
-				Ellipse e = elpses.remove(this.activedEllipseIdx);
+				Ellipse e = elpses.remove(this.activedEllipseIdx);Flags.numNewEllipse--;
 				ArrayList<Point_> keyPoints = e.getKeyPoints();
 				unfinished.add(keyPoints.get(0));
 				unfinished.add(keyPoints.get(1));
