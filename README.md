@@ -1,6 +1,6 @@
-# FaceAnnotationTool
-This is an Java implementation of Face Annotation Tool. It helps you to mark faces\
-using **ellipses** in stead of common bounding boxes.
+# FAT- Face Annotation Tool
+This is an Java implementation of Face Annotation Tool. It helps you to mark faces 
+using **ellipses** ([FDDB](http://vis-www.cs.umass.edu/fddb/) style) in stead of common bounding boxes.
 
 
 ### Usage:
@@ -43,19 +43,25 @@ Get fddb images and annotations by executing `download_fddb.sh`
 
 ### Demo:
 
-1. **Left click** to add key points.\
-![](https://media.giphy.com/media/xUA7aQzq4XxTaACFX2/giphy.gif)
+1. **Left click** to add key points.
+  ![](./gif/leftclicktoadd.gif)
+
+  
+
+  
+
+  
 
 2. Click a coordinate on the right table to highlight an ellipse.
-![](https://media.giphy.com/media/xUPGcueKmXKOEnPrGg/giphy.gif)
+![](gif/selectOntable.gif)
 
 3. **Shift + Mouse Move** to active a new marked ellipse.
-![](https://media.giphy.com/media/3o7btVeGCcNBsilsZi/giphy.gif)
+![](gif/shiftSelect.gif)
 
 4. **Right click** to cancel a key point of an activated ellipse or an unfinished 
 key point.
-![](https://media.giphy.com/media/3ohzdJAZ7prWnFk8QU/giphy.gif)
- 
+![](gif/rightClick.gif)
+
 ### TODO:
 - [x]  basic functions
 - [x]  ask for prefix and suffix when load imglist
